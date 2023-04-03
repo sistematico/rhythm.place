@@ -7,6 +7,9 @@ const volumerange = ref(null);
 const playbtn = ref(null);
 const pausebtn = ref(null);
 const songTitle = ref("Rhythm Place");
+const listen = ref("0");
+const defaultPic = new URL('../assets/img/favicon.svg', import.meta.url).href;
+const picture = ref(null);
 
 function toggle() {
   playbtn.value.classList.toggle("hidden");
@@ -39,6 +42,8 @@ function updateVolume() {
 }
 
 onMounted(_ => {
+  picture.value.src = defaultPic
+
   refresh();
 
   volumerange.value.onchange = _ => updateVolume();
@@ -49,16 +54,23 @@ onMounted(_ => {
       .then((response) => response.json())
       .then((response) => {
         const { icestats: { source: { title } } } = response;
+        const { icestats: { source: { listeners } } } = response;
         songTitle.value = title;
+        listen.value = listeners;
       });
   }, 5000);
 });
 </script>
 <template>
-  <div>
-    {{ songTitle }}
+  <div class="title">
+    <h3>
+      {{ songTitle }}
+    </h3>
   </div>
+
   <div class="audio-player">
+    <img ref="picture" class="picture" src="" alt="" />
+
     <div ref="playbtn" class="playbtn" @click="toggle">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 24">
         <path d="M8.5 8.64L13.77 12L8.5 15.36V8.64M6.5 5v14l11-7" />
@@ -78,7 +90,7 @@ onMounted(_ => {
     </div>
 
     <div class="volume">
-      <input ref="volumerange" class="volume-range" type="range" value="100" min="0" max="100" @change="updateVolume" />
+      <input ref="volumerange" class="volumerange" type="range" value="100" min="0" max="100" @change="updateVolume" />
       <output>100%</output>
     </div>
 
@@ -92,7 +104,54 @@ onMounted(_ => {
       <source src="https://rhythm.place:8443/dance" type="audio/mpeg" />
     </audio>
   </div>
+
+  <div class="listeners">
+    Ouvintes: {{ listen }}
+  </div>
 </template>
 <style lang="scss">
 @import "@/assets/scss/player.scss";
+
+.picture {
+  max-height: 45px;
+  width: auto;
+}
+
+.listeners {
+  font-size: .8rem;
+}
+
+.title {
+  max-width: 90vw;
+  white-space: nowrap; 
+  overflow: hidden;
+  text-overflow: ellipsis; 
+  text-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.72);
+}
+
+.title h3 {
+  font-size: 1rem;
+  color: #fff;
+  // animation: glow .8s ease-in-out infinite alternate;
+}
+
+@-webkit-keyframes glow {
+  from {
+    text-shadow: 0 0 2px #fff, 0 0 2px #fff, 0 0 7px #07ee54, 0 0 9px #07ee54, 0 0 13px #07ee54, 0 0 18px #07ee54, 0 0 20px #07ee54;
+  }
+  
+  to {
+    text-shadow: 0 0 2px #fff, 0 0 7px #ff4da6, 0 0 9px #ff4da6, 0 0 13px #ff4da6, 0 0 18px #ff4da6, 0 0 20px #ff4da6, 0 0 22px #ff4da6;
+  }
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 2px #fff, 0 0 2px #fff, 0 0 7px #07ee54, 0 0 9px #07ee54, 0 0 13px #07ee54, 0 0 18px #07ee54, 0 0 20px #07ee54;
+  }
+  
+  to {
+    text-shadow: 0 0 2px #fff, 0 0 7px #ff4da6, 0 0 9px #ff4da6, 0 0 13px #ff4da6, 0 0 18px #ff4da6, 0 0 20px #ff4da6, 0 0 22px #ff4da6;
+  }
+}
 </style>

@@ -1,24 +1,14 @@
-// .holder {
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   height: 100%;
-// }
-
 .audio-player {
   display: inline-flex;
-  // align-items: center;
-  // justify-content: space-between;
-  gap: 0 20px;
   height: 45px;
   user-select: none;
   -webkit-user-select: none;
   border-radius: 5px;
   color: rgba(0, 0, 0, 0.33);
-  background-color: rgba(30, 30, 32, 0.51);
+  // background-color: rgba(30, 30, 32, 0.51);
+  background: linear-gradient(to right, rgb(182, 244, 146), rgb(51, 139, 147));
   box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.72);
-  padding: 0 10px;
-  border: 3px solid rgba(0, 0, 0, 0.23);
+  // border: 3px solid rgba(0, 0, 0, 0.3);
 }
 
 .audio-player .hidden {
@@ -28,13 +18,13 @@
 .audio-player div {
   display: flex;
   align-items: center;
-  // gap: 10px;
+  margin: 0 8px;
 }
 
 .audio-player .playbtn,
 .audio-player .pausebtn,
 .audio-player .refreshbtn,
-.audio-player .volumebtn {
+.audio-player .volumerange {
   cursor: pointer;
 }
 
