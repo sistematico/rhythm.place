@@ -20,6 +20,5 @@ import Player from './components/player.vue'
   height: auto;
 
 }
-
 .logo:hover { filter: drop-shadow(0 0 2em #42b883aa); /* #646cffaa */ }
 </style>

@@ -98,27 +98,6 @@ onMounted(_ => {
   </div>
 </template>
 <style lang="scss">
-@import url("https://fonts.googleapis.com/css2?family=Nunito&display=swap");
-
-* { box-sizing: border-box; }
-
-html,
-body,
-.holder {
-  height: 100%;
-}
-
-body {
-  font-family: "Nunito", sans-serif;
-  color: rgba(0, 0, 0, 0.33);
-  background: #f8ffae;
-  background: -webkit-linear-gradient(-65deg, #43c6ac, #f8ffae);
-  background: linear-gradient(-65deg, #43c6ac, #f8ffae);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  margin: 0;
-}
-
 .holder {
   display: flex;
   align-items: center;
