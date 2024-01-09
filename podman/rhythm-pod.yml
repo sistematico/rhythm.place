@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: somdomato-pod
+  name: rhythm-pod
 spec:
   volumes:
     - name: icecast-config
@@ -42,9 +42,9 @@ spec:
         - name: POSTGRES_PASSWORD
           value: "password"
         - name: POSTGRES_USER
-          value: "somdomato"
+          value: "rhythm"
         - name: POSTGRES_DB
-          value: "somdomato"
+          value: "rhythm"
       ports:
         - containerPort: 5432
           hostPort: 5432

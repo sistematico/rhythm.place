@@ -3,11 +3,11 @@
 ## Pod
 
 ```bash  
-podman play kube somdomato-pod.yaml
+podman play kube rhythm-pod.yaml
 ```  
 
 # Compose 
 
 ```bash 
-podman-compose -f somdomato.yml up -d
+podman-compose -f rhythm.yml up -d
 ```

@@ -1,9 +1,7 @@
 import { createApp } from 'vue'
-// import './style.css'
+import './assets/scss/main.scss'
 import app from './app.vue'
-// eslint-disable-next-line import/no-unresolved,n/no-missing-import
 import VuePlyr from '@skjnldsv/vue-plyr'
-// eslint-disable-next-line import/no-unresolved,n/no-missing-import
 import '@skjnldsv/vue-plyr/dist/vue-plyr.css'
 
 createApp(app)
