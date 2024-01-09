@@ -38,12 +38,12 @@ span:nth-child(2) {
   }
 }
 
-.neon::before {
-  content: "{";
-  position: absolute;
-  inset: 0.5vmin 0 0 10vmin;
-  transform: rotate(3deg);
-}
+// .neon::before {
+//   content: "{";
+//   position: absolute;
+//   inset: 0.5vmin 0 0 10vmin;
+//   transform: rotate(3deg);
+// }
 
 // @media (max-width: 780px) {
 //   .neon {
