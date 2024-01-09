@@ -6,7 +6,7 @@ import Plyr from "./components/audio.vue";
     <div>
       <img src="/img/logo.svg" alt="Rhythm Place" />
     </div>
-    <div class="content">
+    <div>
       <Plyr />
     </div>
   </div>
