@@ -1,0 +1,13 @@
+[Unit]
+Description=Hono api.somdomato.com
+After=network.target
+
+[Service]
+User=nginx
+#WorkingDirectory=/var/www/somdomato
+ExecStart=/home/nginx/.bun/bin/bun /var/www/somdomato/apps/api/src/index.ts
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

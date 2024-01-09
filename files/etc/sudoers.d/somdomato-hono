@@ -1,0 +1,1 @@
+nginx ALL=(root) NOPASSWD: /usr/bin/systemctl stop somdomato-hono.service, /usr/bin/systemctl start somdomato-hono.service, /usr/bin/systemctl restart somdomato-hono.service, /usr/bin/systemctl status somdomato-hono.service

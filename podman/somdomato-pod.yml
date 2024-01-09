@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: somdomato-pod
+spec:
+  volumes:
+    - name: icecast-config
+      hostPath:
+        path: ../files/etc/icecast2
+    - name: liquidsoap-config
+      hostPath:
+        path: ../files/etc/liquidsoap
+    - name: music-volume
+      hostPath:
+        path: ../packages/api/songs
+    - name: postgres-data
+      hostPath:
+        path: ../packages/api/postgres_data
+  containers:
+    - name: icecast2
+      image: pltnk/icecast2
+      ports:
+        - containerPort: 8000
+          hostPort: 8000
+      volumeMounts:
+        - name: icecast-config
+          mountPath: /etc/icecast2
+        - name: music-volume
+          mountPath: /music
+
+    - name: liquidsoap
+      image: savonet/liquidsoap:v2.2.2
+      volumeMounts:
+        - name: liquidsoap-config
+          mountPath: /etc/liquidsoap
+        - name: music-volume
+          mountPath: /music
+
+    - name: postgresql
+      image: postgres:14.0
+      env:
+        - name: POSTGRES_PASSWORD
+          value: "password"
+        - name: POSTGRES_USER
+          value: "somdomato"
+        - name: POSTGRES_DB
+          value: "somdomato"
+      ports:
+        - containerPort: 5432
+          hostPort: 5432
+      volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
