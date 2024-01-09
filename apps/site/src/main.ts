@@ -1,5 +1,11 @@
 import { createApp } from 'vue'
-import './style.css'
-import App from './App.vue'
+// import './style.css'
+import app from './app.vue'
+// eslint-disable-next-line import/no-unresolved,n/no-missing-import
+import VuePlyr from '@skjnldsv/vue-plyr'
+// eslint-disable-next-line import/no-unresolved,n/no-missing-import
+import '@skjnldsv/vue-plyr/dist/vue-plyr.css'
 
-createApp(App).mount('#app')
+createApp(app)
+  .use(VuePlyr)
+  .mount('#app')

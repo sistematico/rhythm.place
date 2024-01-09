@@ -33,7 +33,7 @@ jobs:
           password: ${{ secrets.SSH_PASS }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd ${{ secrets.PROJECT_PATH }}
+            cd ${{ secrets.PROJECT_PATH }}/apps/site
             [ ! -f .env ] && cp .env.prod .env
             /home/nginx/.bun/bin/bun install
             /home/nginx/.bun/bin/bun build
