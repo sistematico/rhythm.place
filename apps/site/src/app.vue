@@ -3,11 +3,16 @@ import Plyr from "./components/audio.vue";
 </script>
 <template>
   <div class="container">
-    <div>
+    <!-- <div>
       <img src="/img/logo.svg" alt="Rhythm Place" />
+    </div> -->
+    <div class="neon">
+      <span>Rhythm</span>
+      <span>Place</span>
     </div>
     <div>
       <Plyr />
     </div>
   </div>
+  <div class="scrollingBG"></div>
 </template>

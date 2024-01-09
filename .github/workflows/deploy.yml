@@ -36,4 +36,4 @@ jobs:
             cd ${{ secrets.PROJECT_PATH }}/apps/site
             [ ! -f .env ] && cp .env.prod .env
             /home/nginx/.bun/bin/bun install
-            /home/nginx/.bun/bin/bun build
+            /home/nginx/.bun/bin/bun run build
