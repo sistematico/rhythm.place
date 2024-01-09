@@ -32,9 +32,14 @@ left:0px;
 
 @keyframes bgScroll {
   0% {
-    background-position : 0px 0px
+    background-position : 0px 0px;
+    // perspective: 200px;
+    // transform: perspective(100px) translateZ(0);
   }
   100% {
-    background-position : 0px -1496px
+    background-position : -1390px -1390px;
+    // perspective: 200px;
+
+    // transform: perspective(100px) translateZ(5px);
   }
 }

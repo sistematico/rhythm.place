@@ -15,8 +15,16 @@
 }
 
 img {
-  max-width: 100%;
-  height: auto;
+  max-height: 200px;
+  width: auto;
+}
+
+header {
+  display: flex;
+  // flex-direction: column;
+  // justify-content: center;
+  align-items: center;
+  border: 2px solid red;
 }
 
 .container {
