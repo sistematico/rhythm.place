@@ -4,7 +4,8 @@ import VuePlyr from '@skjnldsv/vue-plyr'
 
 const STREAM_URL = `${import.meta.env.VITE_STREAM_URL}`;
 const JSON_URL = `${STREAM_URL}/status-json.xsl`;
-const source = ref(`${STREAM_URL}/main`)
+let ts = Date.now() / 1000 | 0
+const source = ref(`${STREAM_URL}/main?ts=${ts}`)
 const song = ref("Rhythm Place");
 const plyr = ref(null);
 
@@ -61,7 +62,7 @@ const plyrOptions = {
 onMounted(() => {	
 	const restart = document.getElementById("restart")
 	restart?.addEventListener("click", function() {
-    const ts = Date.now() / 1000 | 0
+    ts = Date.now() / 1000 | 0
     plyr.value.player.stop();
     source.value = `${STREAM_URL}/main?ts=${ts}`
     plyr.value.player.play();
