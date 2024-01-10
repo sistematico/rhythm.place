@@ -1,9 +1,6 @@
-def get_proxima_musica() =
-  arquivo = "/caminho/para/proxima_musica.ts"
-  resultado = list.hd(default="", get_process_output("cat #{arquivo}"))
-  resultado
+def next()
+  uri = list.hd(process.read.lines("SONGS_PATH=/media/songs /home/liquidsoap/.bun/bin/bun /var/www/rhythm.place/apps/api/src/engine.ts"))
+  request.create(uri)
 end
 
-fonte_dinamica = request.dynamic(fun () -> request.create(get_proxima_musica()))
-
-output.icecast(%mp3, host = "localhost", port = 8000, password = "hackme", mount = "main", fonte_dinamica)
+bun = request.dynamic(next)

@@ -1,22 +1,26 @@
 <script setup lang="ts">
 import { ref, onUnmounted, onMounted } from "vue";
-import VuePlyr from '@skjnldsv/vue-plyr'
+import VuePlyr from "@skjnldsv/vue-plyr";
 
 const STREAM_URL = `${import.meta.env.VITE_STREAM_URL}`;
 const JSON_URL = `${STREAM_URL}/status-json.xsl`;
-let ts = Date.now() / 1000 | 0
-const source = ref(`${STREAM_URL}/main?ts=${ts}`)
+let ts = (Date.now() / 1000) | 0;
+const source = ref(`${STREAM_URL}/main?ts=${ts}`);
 const song = ref("Rhythm Place");
 const plyr = ref(null);
 
 let timerId = setInterval(async () => {
-  const { icestats: { source: { title } } } = await (await fetch(JSON_URL)).json();
+  const {
+    icestats: {
+      source: { title },
+    },
+  } = await (await fetch(JSON_URL)).json();
   song.value = title;
 
-  if (!plyr.value.player.playing) { 
-    ts = Date.now() / 1000 | 0
+  if (!plyr.value.player.playing) {
+    ts = (Date.now() / 1000) | 0;
     plyr.value.player.currentTime = 0;
-    source.value = `${STREAM_URL}/main?ts=${ts}`
+    source.value = `${STREAM_URL}/main?ts=${ts}`;
   }
 }, 1000);
 
@@ -61,27 +65,57 @@ const controls = `
 `;
 
 const plyrOptions = {
-  title: 'Rhythm Place',
-  controls
+  title: "Rhythm Place",
+  controls,
 };
 
-onMounted(() => {	
-	const restart = document.getElementById("restart")
-	restart?.addEventListener("click", function() {
-    ts = Date.now() / 1000 | 0
-    source.value = `${STREAM_URL}/main?ts=${ts}`
+onMounted(() => {
+  const restart = document.getElementById("restart");
+  restart?.addEventListener("click", function () {
+    ts = (Date.now() / 1000) | 0;
+    source.value = `${STREAM_URL}/main?ts=${ts}`;
     plyr.value.player.currentTime = 0;
     plyr.value.player.play();
-  })
-})
+  });
+});
 </script>
 <template>
-	<div>
-		<h2>{{ song }}</h2>
-		<vue-plyr ref="plyr" :options="plyrOptions">
-			<audio controls crossorigin="anonymous" playsinline>
-				<source :src="source"	type="audio/mp3">
-			</audio>
-		</vue-plyr>
-	</div>
+  <div class="player-container">
+    <div class="truncate">
+      {{ song }}
+      <vue-plyr ref="plyr" :options="plyrOptions">
+        <audio controls crossorigin="anonymous" playsinline>
+          <source :src="source" type="audio/mp3" />
+        </audio>
+      </vue-plyr>
+    </div>
+  </div>
 </template>
+<style>
+/* .player-container {
+  display: flex;
+   padding: 10px; 
+  border: 1px solid #ddd;
+  max-width: 100%;  Limita a largura máxima 
+}
+
+.truncate {
+  min-width: 0; Impede que a div cresça além do contêiner flexível 
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+   margin: 10px; 
+} */
+
+.player-container {
+  display: block; /* Usar bloco em vez de flex */
+  padding: 10px;
+  /* border: 1px solid #ddd; */
+}
+
+.truncate {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+</style>

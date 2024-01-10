@@ -4,7 +4,9 @@ import Plyr from "./components/audio.vue";
 <template>
   <div class="container">
     <header>
-      <img src="/img/logotipo.svg" alt="Rhythm Place" />
+      <div>
+        <img src="/img/logotipo.svg" alt="Rhythm Place" />
+      </div>
       <div class="neon">
         <span>Rhythm</span>
         <span>Place</span>
