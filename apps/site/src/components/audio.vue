@@ -13,10 +13,9 @@ let timerId = setInterval(async () => {
   const { icestats: { source: { title } } } = await (await fetch(JSON_URL)).json();
   song.value = title;
 
-  if (plyr.value.player.paused) { 
+  if (!plyr.value.player.playing) { 
     ts = Date.now() / 1000 | 0
     source.value = `${STREAM_URL}/main?ts=${ts}`
-    console.log(`Paused, restream: ${STREAM_URL}/main?ts=${ts}`)
   }
 }, 1000);
 
@@ -69,7 +68,6 @@ onMounted(() => {
 	const restart = document.getElementById("restart")
 	restart?.addEventListener("click", function() {
     ts = Date.now() / 1000 | 0
-    plyr.value.player.stop();
     source.value = `${STREAM_URL}/main?ts=${ts}`
     plyr.value.player.play();
   })
