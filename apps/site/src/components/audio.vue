@@ -15,6 +15,7 @@ let timerId = setInterval(async () => {
 
   if (!plyr.value.player.playing) { 
     ts = Date.now() / 1000 | 0
+    plyr.value.player.currentTime = 0;
     source.value = `${STREAM_URL}/main?ts=${ts}`
   }
 }, 1000);
@@ -69,6 +70,7 @@ onMounted(() => {
 	restart?.addEventListener("click", function() {
     ts = Date.now() / 1000 | 0
     source.value = `${STREAM_URL}/main?ts=${ts}`
+    plyr.value.player.currentTime = 0;
     plyr.value.player.play();
   })
 })
