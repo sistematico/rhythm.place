@@ -12,6 +12,12 @@ const plyr = ref(null);
 let timerId = setInterval(async () => {
   const { icestats: { source: { title } } } = await (await fetch(JSON_URL)).json();
   song.value = title;
+
+  if (plyr.value.player.paused) { 
+    ts = Date.now() / 1000 | 0
+    source.value = `${STREAM_URL}/main?ts=${ts}`
+    console.log(`Paused, restream: ${STREAM_URL}/main?ts=${ts}`)
+  }
 }, 1000);
 
 onUnmounted(() => {
