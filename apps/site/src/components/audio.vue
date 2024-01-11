@@ -1,32 +1,39 @@
 <script setup lang="ts">
-import { ref, onUnmounted, onMounted } from "vue";
+import { ref, watch, onUnmounted, onMounted } from "vue";
+import { store } from "../store.ts";
 import VuePlyr from "@skjnldsv/vue-plyr";
 
 const STREAM_URL = `${import.meta.env.VITE_STREAM_URL}`;
 const JSON_URL = `${STREAM_URL}/status-json.xsl`;
 let ts = (Date.now() / 1000) | 0;
-const source = ref(`${STREAM_URL}/main?ts=${ts}`);
-const song = ref("Rhythm Place");
+let currentSource = null;
+const streamSource = ref(`${STREAM_URL}/${store.genre}?ts=${ts}`);
+const listeners = ref("0");
+const listenersPeak = ref("0");
 const plyr = ref(null);
 
 let timerId = setInterval(async () => {
-  const {
-    icestats: {
-      source: { title },
-    },
-  } = await (await fetch(JSON_URL)).json();
-  song.value = title;
+  const { icestats: { source } } = await (await fetch(JSON_URL)).json();
+  currentSource = await source.find((element: { genre: string; }) => element.genre === store.genre.charAt(0).toUpperCase() + store.genre.slice(1));
+
+  if (currentSource) {
+    listeners.value = currentSource.listeners;
+    listenersPeak.value = currentSource.listener_peak;
+    document.querySelector(".plyr__title").innerHTML = currentSource.title;
+  }
+
+  // function getKeyByValue(object, value) {
+  // console.log(Object.keys(source).find(key => source[key] === 'dance'))
+  // console.log(Object.keys(source).find(key => source[key].genre === 'dance'))
+// }
+
 
   if (!plyr.value.player.playing) {
     ts = (Date.now() / 1000) | 0;
-    plyr.value.player.currentTime = 0;
-    source.value = `${STREAM_URL}/main?ts=${ts}`;
+    document.querySelector("audio").load();
+    streamSource.value = `${STREAM_URL}/${store.genre}?ts=${ts}`;
   }
 }, 1000);
-
-onUnmounted(() => {
-  clearInterval(timerId);
-});
 
 const controls = `
 <div class="plyr__controls">
@@ -40,6 +47,7 @@ const controls = `
     <span class="label--pressed plyr__tooltip" role="tooltip">Pause</span>
     <span class="label--not-pressed plyr__tooltip" role="tooltip">Play</span>
   </button>
+  <div class="plyr__title" aria-label="Title">Rhythm Place</div>
   <button type="button" class="plyr__control" aria-label="Mute" data-plyr="mute">
     <svg class="icon--pressed" role="presentation"><use xlink:href="#plyr-muted"></use></svg>
     <svg class="icon--not-pressed" role="presentation"><use xlink:href="#plyr-volume"></use></svg>
@@ -69,53 +77,48 @@ const plyrOptions = {
   controls,
 };
 
+function changeGenre(genre: string) {
+  const ts = (Date.now() / 1000) | 0;
+  streamSource.value = `${STREAM_URL}/${genre}?ts=${ts}`;
+  document.querySelector("audio").load();
+  plyr.value.player.play();
+}
+
+watch(
+  () => store.genre,
+  () => {
+    console.log(store.genre);
+    changeGenre(store.genre);
+  }
+);
+
 onMounted(() => {
   const restart = document.getElementById("restart");
   restart?.addEventListener("click", function () {
     ts = (Date.now() / 1000) | 0;
-    source.value = `${STREAM_URL}/main?ts=${ts}`;
-    plyr.value.player.currentTime = 0;
+    streamSource.value = `${STREAM_URL}/${store.genre}?ts=${ts}`;
+    document.querySelector("audio").load();
     plyr.value.player.play();
   });
+});
+
+onUnmounted(() => {
+  clearInterval(timerId);
 });
 </script>
 <template>
   <div class="player-container">
-    <div class="truncate">
-      {{ song }}
-      <vue-plyr ref="plyr" :options="plyrOptions">
-        <audio controls crossorigin="anonymous" playsinline>
-          <source :src="source" type="audio/mp3" />
-        </audio>
-      </vue-plyr>
-    </div>
+    <vue-plyr ref="plyr" :options="plyrOptions">
+      <audio controls crossorigin="anonymous" playsinline>
+        <source :src="streamSource" type="audio/mp3" />
+      </audio>
+    </vue-plyr>
+    <div class="stats">Ouvintes: {{ listeners }} Pico: {{ listenersPeak }}</div>
   </div>
 </template>
 <style>
 /* .player-container {
-  display: flex;
-   padding: 10px; 
-  border: 1px solid #ddd;
-  max-width: 100%;  Limita a largura máxima 
-}
-
-.truncate {
-  min-width: 0; Impede que a div cresça além do contêiner flexível 
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-   margin: 10px; 
-} */
-
-.player-container {
-  display: block; /* Usar bloco em vez de flex */
+  display: block;  Usar bloco em vez de flex 
   padding: 10px;
-  /* border: 1px solid #ddd; */
-}
-
-.truncate {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
+} */
 </style>

@@ -17,19 +17,34 @@ end
 
 bun = request.dynamic(next)
 
-cross = crossfade(fade_out=3., fade_in=3., duration=5., bun)
 jingle = single("say:Rhythm Place")
+cross = crossfade(fade_out=3., fade_in=3., duration=5., bun)
 radio = fallback([cross, jingle])
-main = random(weights=[1, 1], [jingle, radio])
+
+dance = random(weights=[1, 1], [jingle, radio])
+rock = random(weights=[1, 1], [jingle, radio])
 
 output.icecast(%mp3, 
-  name='Rhythm Place',
-  genre='Dance',
+  name='Rhythm Place - Dance',
+  genre='Various',
   description='O melhor do dance!',
   url='https://rhythm.place',
   host="localhost", 
   port=8000, 
   password="hackme", 
-  mount="main", 
+  mount="dance", 
   fallible=true,
-  main)
+  dance)
+
+output.icecast(%mp3, 
+  name='Rhythm Place - Rock',
+  genre='Dance',
+  description='O melhor do rock!',
+  url='https://rhythm.place',
+  host="localhost", 
+  port=8002, 
+  password="hackme", 
+  mount="rock", 
+  fallible=true,
+  rock)
+

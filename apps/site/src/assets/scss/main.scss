@@ -1,6 +1,6 @@
 @import "fonts";
 @import "bg";
-@import "neon";
+// @import "neon";
 
 :root {
   font-family: "Nunito", Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -25,16 +25,13 @@ header div {
   flex: 1 1 auto; // Flexibilidade com base autoajustável
   margin: 10px;
   padding: 20px;
+  max-height: 180px;
+  text-align: center;
 }
 
 header div:nth-child(2) {
   flex-grow: 1; // Garante que cresça para ocupar o espaço disponível
   text-align: center; // Alinha o texto ao centro
-}
-
-header div {
-  max-height: 180px;
-  text-align: center;
 }
 
 header div img {
@@ -51,9 +48,10 @@ header div img {
 }
 
 .container > div {
-  display: table-cell; /* Make elements inside the container behave like table cells */
+  // display: table-cell; /* Make elements inside the container behave like table cells */
   width: 100%;
   max-width: 600px;
   box-sizing: border-box;
   text-align: center;
+  margin: 20px;
 }
