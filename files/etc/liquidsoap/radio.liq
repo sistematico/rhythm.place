@@ -5,19 +5,12 @@ def cross(g)
 end
 
 def next(g)
-  # Esta função interna `request_function` será chamada para cada nova faixa
   def request_function() =
-    # Obtém a URI da próxima faixa
     uri = list.hd(process.read.lines("SONGS_PATH=/media/songs /home/liquidsoap/.bun/bin/bun /var/www/rhythm.place/apps/api/src/engine.ts #{g}"))
-    
-    # Cria um request com a URI obtida
     request.create(uri)
   end
-
-  # Retorna uma fonte dinâmica que utiliza a função `request_function`
   request.dynamic(request_function)
 end
-
 
 # def next(g)
 #   uri = list.hd(process.read.lines("SONGS_PATH=/media/songs /home/liquidsoap/.bun/bin/bun /var/www/rhythm.place/apps/api/src/engine.ts #{g}"))
@@ -31,13 +24,12 @@ seventies = next('seventies')
 eighties = next('eighties')
 nineties = next('nineties')
 
-jingle = single("say:Rhythm Place")
-main = fallback([cross(main), jingle])
-dance = fallback([cross(dance), jingle])
-rock = fallback([cross(rock), jingle])
-seventies = fallback([cross(seventies), jingle])
-eighties = fallback([cross(eighties), jingle])
-nineties = fallback([cross(nineties), jingle])
+main = fallback([cross(main), single("say:Rhythm Place")])
+dance = fallback([cross(dance), single("say:Rhythm Place")])
+rock = fallback([cross(rock), single("say:Rhythm Place")])
+seventies = fallback([cross(seventies), single("say:Rhythm Place")])
+eighties = fallback([cross(eighties), single("say:Rhythm Place")])
+nineties = fallback([cross(nineties), single("say:Rhythm Place")])
 
 output.icecast(%mp3, 
   name='Rhythm Place',
@@ -48,7 +40,6 @@ output.icecast(%mp3,
   port=8000, 
   password="hackme", 
   mount="main", 
-  fallible=true,
   main)
 
 output.icecast(%mp3, 
@@ -60,7 +51,6 @@ output.icecast(%mp3,
   port=8002, 
   password="hackme", 
   mount="dance", 
-  fallible=true,
   dance)
 
 output.icecast(%mp3, 
@@ -72,7 +62,6 @@ output.icecast(%mp3,
   port=8004, 
   password="hackme", 
   mount="rock", 
-  fallible=true,
   rock)
 
 output.icecast(%mp3, 
@@ -84,7 +73,6 @@ output.icecast(%mp3,
   port=8006, 
   password="hackme", 
   mount="seventies", 
-  fallible=true,
   seventies)
 
 output.icecast(%mp3, 
@@ -96,7 +84,6 @@ output.icecast(%mp3,
   port=8008, 
   password="hackme", 
   mount="eighties", 
-  fallible=true,
   eighties)
 
 output.icecast(%mp3, 
@@ -108,6 +95,5 @@ output.icecast(%mp3,
   port=8010, 
   password="hackme", 
   mount="nineties", 
-  fallible=true,
   nineties)
 

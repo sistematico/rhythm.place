@@ -53,7 +53,8 @@ const plyrOptions = { title: "Rhythm Place", controls };
 
 function changeGenre(genre: string) {
   const ts = (Date.now() / 1000) | 0;
-  streamSource.value = `${STREAM_URL}/${genre.toLowerCase()}?ts=${ts}`;
+  const streamGenre = genre === 'Principal' ? 'main' : genre.toLowerCase();
+  streamSource.value = `${STREAM_URL}/${streamGenre}?ts=${ts}`;
   document.querySelector("audio").load();
   plyr.value.player.play();
 }
