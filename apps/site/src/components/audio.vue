@@ -6,34 +6,11 @@ import VuePlyr from "@skjnldsv/vue-plyr";
 const STREAM_URL = `${import.meta.env.VITE_STREAM_URL}`;
 const JSON_URL = `${STREAM_URL}/status-json.xsl`;
 let ts = (Date.now() / 1000) | 0;
-let currentSource = null;
-const streamSource = ref(`${STREAM_URL}/${store.genre.toLowerCase()}?ts=${ts}`);
+let timerId: ReturnType<typeof setInterval>;
+const streamSource = store.genre === 'Principal' ? ref(`${STREAM_URL}/main?ts=${ts}`) : ref(`${STREAM_URL}/${store.genre.toLowerCase()}?ts=${ts}`);
 const listeners = ref("0");
 const listenersPeak = ref("0");
 const plyr = ref(null);
-
-let timerId = setInterval(async () => {
-  const { icestats: { source } } = await (await fetch(JSON_URL)).json();
-  currentSource = await source.find((element: { genre: string; }) => element.genre === store.genre);
-
-  if (currentSource) {
-    listeners.value = currentSource.listeners;
-    listenersPeak.value = currentSource.listener_peak;
-    document.querySelector(".plyr__title").innerHTML = currentSource.title;
-  }
-
-  // function getKeyByValue(object, value) {
-  // console.log(Object.keys(source).find(key => source[key] === 'dance'))
-  // console.log(Object.keys(source).find(key => source[key].genre === 'dance'))
-// }
-
-
-  if (!plyr.value.player.playing) {
-    ts = (Date.now() / 1000) | 0;
-    document.querySelector("audio").load();
-    streamSource.value = `${STREAM_URL}/${store.genre.toLowerCase()}?ts=${ts}`;
-  }
-}, 1000);
 
 const controls = `
 <div class="plyr__controls">
@@ -72,10 +49,7 @@ const controls = `
 </div>
 `;
 
-const plyrOptions = {
-  title: "Rhythm Place",
-  controls,
-};
+const plyrOptions = { title: "Rhythm Place", controls };
 
 function changeGenre(genre: string) {
   const ts = (Date.now() / 1000) | 0;
@@ -87,16 +61,35 @@ function changeGenre(genre: string) {
 watch(
   () => store.genre,
   () => {
-    console.log(store.genre);
     changeGenre(store.genre);
   }
 );
+
+timerId = setInterval(async () => {
+  const { icestats: { source } } = await (await fetch(JSON_URL)).json();
+  
+  const currentSource = await source.find((element: { genre: string }) => element.genre === store.genre);
+
+  if (currentSource) {
+    listeners.value = currentSource.listeners;
+    listenersPeak.value = currentSource.listener_peak;
+    document.querySelector(".plyr__title").innerHTML = currentSource.title;
+  }
+
+  if (!plyr.value.player.playing) {
+    ts = (Date.now() / 1000) | 0;
+    document.querySelector("audio").load();
+    const streamGenre = store.genre === 'Principal' ? 'main' : store.genre.toLowerCase();
+    streamSource.value = `${STREAM_URL}/${streamGenre}?ts=${ts}`;
+  }
+}, 1000);
 
 onMounted(() => {
   const restart = document.getElementById("restart");
   restart?.addEventListener("click", function () {
     ts = (Date.now() / 1000) | 0;
-    streamSource.value = `${STREAM_URL}/${store.genre.toLowerCase()}?ts=${ts}`;
+    const streamGenre = store.genre === 'Principal' ? 'main' : store.genre.toLowerCase();
+    streamSource.value = `${STREAM_URL}/${streamGenre}?ts=${ts}`;
     document.querySelector("audio").load();
     plyr.value.player.play();
   });

@@ -5,8 +5,12 @@ import { store } from "../store.ts";
   <div class="dropdown">
     <button class="dropbtn">{{ store.genre }}</button>
     <div class="dropdown-content">
+      <a href="#" @click="store.genre = 'Principal'">Principal</a>
       <a href="#" @click="store.genre = 'Dance'">Dance</a>
       <a href="#" @click="store.genre = 'Rock'">Rock</a>
+      <a href="#" @click="store.genre = 'Nineties'">90s</a>
+      <a href="#" @click="store.genre = 'Eighties'">80s</a>
+      <a href="#" @click="store.genre = 'Seventies'">70s</a>
     </div>
   </div>
 </template>
