@@ -24,8 +24,12 @@ onMounted(() => {
       </div>
     </header>
     <div class="controls">
-      <Dropdown />
-      <Plyr />
+      <div>
+        <Dropdown />
+      </div>
+      <div>
+        <Plyr />
+      </div>
     </div>
   </div>
   <div class="scrollingBG"></div>
@@ -33,9 +37,11 @@ onMounted(() => {
 <style scoped lang="scss">
 $color: v-bind(color);
 
-.controls {
-  display: flex;
-}
+// .controls {
+//   display: grid;
+//   // grid-gap: 1rem;
+//   grid-template-columns: repeat(auto-fit, minmax(1fr, 1fr));
+// }
 
 .neon {
   font-family: "Streamster";
