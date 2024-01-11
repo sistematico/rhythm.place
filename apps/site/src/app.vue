@@ -43,6 +43,10 @@ $color: v-bind(color);
 //   grid-template-columns: repeat(auto-fit, minmax(1fr, 1fr));
 // }
 
+.controls div {
+  margin: 10px;
+}
+
 .neon {
   font-family: "Streamster";
   max-width: 100%;

@@ -16,13 +16,15 @@ import { store } from "../store.ts";
 </template>
 <style>
 .dropbtn {
-  background-color: #4caf50;
-  color: white;
+  background-color: #fff;
+  color: rgba(0, 0, 0, 0.8);
   padding: 16px;
   font-size: 16px;
   border: none;
+  border-radius: 5px;
   cursor: pointer;
   min-width: 160px;
+  box-shadow: 0 0 3px 4px rgba(0, 0, 0, 0.2); /* offset-x | offset-y | blur-radius | spread-radius | color */
 }
 
 .dropdown {
@@ -35,7 +37,8 @@ import { store } from "../store.ts";
   position: absolute;
   background-color: #f9f9f9;
   min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.5);
   z-index: 1;
 }
 
@@ -54,7 +57,7 @@ import { store } from "../store.ts";
   display: block;
 }
 
-.dropdown:hover .dropbtn {
+/* .dropdown:hover .dropbtn {
   background-color: #3e8e41;
-}
+} */
 </style>
