@@ -1,28 +1,25 @@
 #!/usr/bin/env liquidsoap
 
-def next()
-  uri = list.hd(process.read.lines("SONGS_PATH=/media/songs /home/liquidsoap/.bun/bin/bun /var/www/rhythm.place/apps/api/src/engine.ts"))
+def next_dance()
+  uri = list.hd(process.read.lines("SONGS_PATH=/media/songs /home/liquidsoap/.bun/bin/bun /var/www/rhythm.place/apps/api/src/engine.ts dance"))
   request.create(uri)
-
-  # Aqui você adicionaria lógica para mapear a URI para a URL da capa. 
-  # Por exemplo, você poderia ter um arquivo ou banco de dados que associa URIs a URLs de capas.
-  # cover = get_cover_url(uri)
-
-  # Para este exemplo, vamos apenas simular uma URL de capa.
-  #cover = "http://example.com/covers/" ^ uri ^ ".jpg"
-
-  # Anotando a faixa com a URL da capa
-  #request.create("annotate:cover=cover.jpg":uri)
 end
+bun_dance = request.dynamic(next_dance)
 
-bun = request.dynamic(next)
+def next_rock()
+  uri = list.hd(process.read.lines("SONGS_PATH=/media/songs /home/liquidsoap/.bun/bin/bun /var/www/rhythm.place/apps/api/src/engine.ts rock"))
+  request.create(uri)
+end
+bun_rock = request.dynamic(next_rock)
 
 jingle = single("say:Rhythm Place")
-cross = crossfade(fade_out=3., fade_in=3., duration=5., bun)
-radio = fallback([cross, jingle])
+cross_dance = crossfade(fade_out=3., fade_in=3., duration=5., bun_dance)
+cross_rock = crossfade(fade_out=3., fade_in=3., duration=5., bun_rock)
+radio_dance = fallback([cross_dance, jingle])
+radio_rock = fallback([cross_rock, jingle])
 
-dance = random(weights=[1, 1], [jingle, radio])
-rock = random(weights=[1, 1], [jingle, radio])
+dance = random(weights=[1, 1], [jingle, radio_dance])
+rock = random(weights=[1, 1], [jingle, radio_rock])
 
 output.icecast(%mp3, 
   name='Rhythm Place - Dance',

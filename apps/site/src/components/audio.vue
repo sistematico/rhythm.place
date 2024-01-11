@@ -7,14 +7,14 @@ const STREAM_URL = `${import.meta.env.VITE_STREAM_URL}`;
 const JSON_URL = `${STREAM_URL}/status-json.xsl`;
 let ts = (Date.now() / 1000) | 0;
 let currentSource = null;
-const streamSource = ref(`${STREAM_URL}/${store.genre}?ts=${ts}`);
+const streamSource = ref(`${STREAM_URL}/${store.genre.toLowerCase()}?ts=${ts}`);
 const listeners = ref("0");
 const listenersPeak = ref("0");
 const plyr = ref(null);
 
 let timerId = setInterval(async () => {
   const { icestats: { source } } = await (await fetch(JSON_URL)).json();
-  currentSource = await source.find((element: { genre: string; }) => element.genre === store.genre.charAt(0).toUpperCase() + store.genre.slice(1));
+  currentSource = await source.find((element: { genre: string; }) => element.genre === store.genre);
 
   if (currentSource) {
     listeners.value = currentSource.listeners;
@@ -31,7 +31,7 @@ let timerId = setInterval(async () => {
   if (!plyr.value.player.playing) {
     ts = (Date.now() / 1000) | 0;
     document.querySelector("audio").load();
-    streamSource.value = `${STREAM_URL}/${store.genre}?ts=${ts}`;
+    streamSource.value = `${STREAM_URL}/${store.genre.toLowerCase()}?ts=${ts}`;
   }
 }, 1000);
 
@@ -79,7 +79,7 @@ const plyrOptions = {
 
 function changeGenre(genre: string) {
   const ts = (Date.now() / 1000) | 0;
-  streamSource.value = `${STREAM_URL}/${genre}?ts=${ts}`;
+  streamSource.value = `${STREAM_URL}/${genre.toLowerCase()}?ts=${ts}`;
   document.querySelector("audio").load();
   plyr.value.player.play();
 }
@@ -96,7 +96,7 @@ onMounted(() => {
   const restart = document.getElementById("restart");
   restart?.addEventListener("click", function () {
     ts = (Date.now() / 1000) | 0;
-    streamSource.value = `${STREAM_URL}/${store.genre}?ts=${ts}`;
+    streamSource.value = `${STREAM_URL}/${store.genre.toLowerCase()}?ts=${ts}`;
     document.querySelector("audio").load();
     plyr.value.player.play();
   });
@@ -116,9 +116,3 @@ onUnmounted(() => {
     <div class="stats">Ouvintes: {{ listeners }} Pico: {{ listenersPeak }}</div>
   </div>
 </template>
-<style>
-/* .player-container {
-  display: block;  Usar bloco em vez de flex 
-  padding: 10px;
-} */
-</style>
