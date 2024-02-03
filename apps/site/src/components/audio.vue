@@ -51,7 +51,13 @@ const controls = `
 
 const plyrOptions = { title: "Rhythm Place", controls };
 
-function changeGenre(genre: string) {
+const checkOffline = async () => {
+  const check = await fetch(STREAM_URL)
+  if (check.ok) return false
+  return true
+}
+
+const changeGenre = (genre: string) => {
   const ts = (Date.now() / 1000) | 0;
   const streamGenre = genre === 'Principal' ? 'main' : genre.toLowerCase();
   streamSource.value = `${STREAM_URL}/${streamGenre}?ts=${ts}`;
@@ -67,6 +73,7 @@ watch(
 );
 
 timerId = setInterval(async () => {
+  const offline = await checkOffline()
   const { icestats: { source } } = await (await fetch(JSON_URL)).json();
 
   const streamGenre = store.genre === 'Principal' ? 'Various' : store.genre;  
@@ -84,8 +91,17 @@ timerId = setInterval(async () => {
     document.querySelector("audio").load();
     const streamGenre = store.genre === 'Principal' ? 'main' : store.genre.toLowerCase();
     streamSource.value = `${STREAM_URL}/${streamGenre}?ts=${ts}`;
+  } 
+  
+  if (offline || !navigator.onLine) {
+    console.info("Fonte ou navegador off-line, tentando reconectar...")
+    ts = (Date.now() / 1000) | 0;
+    document.querySelector("audio").load();
+    const streamGenre = store.genre === 'Principal' ? 'main' : store.genre.toLowerCase();
+    streamSource.value = `${STREAM_URL}/${streamGenre}?ts=${ts}`;
+    if (plyr.value.player.playing) document.querySelector("audio").play();
   }
-}, 1000);
+}, 1500);
 
 onMounted(() => {
   const restart = document.getElementById("restart");
