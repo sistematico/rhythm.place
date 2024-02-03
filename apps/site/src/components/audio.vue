@@ -68,8 +68,9 @@ watch(
 
 timerId = setInterval(async () => {
   const { icestats: { source } } = await (await fetch(JSON_URL)).json();
-  
-  const currentSource = await source.find((element: { genre: string }) => element.genre === store.genre);
+
+  const streamGenre = store.genre === 'Principal' ? 'Various' : store.genre;  
+  const currentSource = await source.find((element: { genre: string }) => element.genre === streamGenre);
 
   if (currentSource) {
     listeners.value = currentSource.listeners;
