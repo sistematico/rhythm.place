@@ -73,9 +73,10 @@ timerId = setInterval(async () => {
   const currentSource = await source.find((element: { genre: string }) => element.genre === streamGenre);
 
   if (currentSource) {
+    const title = currentSource.title !== 'undefined' ? currentSource.title : 'Rhythm Place';
     listeners.value = currentSource.listeners;
     listenersPeak.value = currentSource.listener_peak;
-    document.querySelector(".plyr__title").innerHTML = currentSource.title;
+    document.querySelector(".plyr__title").innerHTML = title;
   }
 
   if (!plyr.value.player.playing) {
