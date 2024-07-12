@@ -1,0 +1,1 @@
+nginx ALL=(root) NOPASSWD: /usr/bin/systemctl stop rhythm-hono.service, /usr/bin/systemctl start rhythm-hono.service, /usr/bin/systemctl restart rhythm-hono.service, /usr/bin/systemctl status rhythm-hono.service

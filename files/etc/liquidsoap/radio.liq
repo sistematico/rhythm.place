@@ -12,11 +12,6 @@ def next(g)
   request.dynamic(request_function)
 end
 
-# def next(g)
-#   uri = list.hd(process.read.lines("SONGS_PATH=/media/songs /home/liquidsoap/.bun/bin/bun /var/www/rhythm.place/apps/api/src/engine.ts #{g}"))
-#   request.create(uri)
-# end
-
 main = next('main')
 dance = next('dance')
 rock = next('rock')
@@ -40,9 +35,7 @@ output.icecast(%mp3,
   port=8000, 
   password="hackme", 
   mount="main", 
-  volume(main, volume=-0.1))
-
-  
+  volume(main, volume=-0.1))  
 
 output.icecast(%mp3, 
   name='Rhythm Place - Dance',

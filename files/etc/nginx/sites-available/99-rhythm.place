@@ -12,9 +12,21 @@ server {
     ssl_certificate         /etc/letsencrypt/live/rhythm.place/fullchain.pem;
     ssl_certificate_key     /etc/letsencrypt/live/rhythm.place/privkey.pem;
 
+    server_name *.rhythm.place;
+    return 301 https://rhythm.place$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+
+    ssl_certificate         /etc/letsencrypt/live/rhythm.place/fullchain.pem;
+    ssl_certificate_key     /etc/letsencrypt/live/rhythm.place/privkey.pem;
+
     server_name rhythm.place;
     root /var/www/rhythm.place/apps/site/dist;
 
+    include conf.d/rtm-errors.conf;
     include conf.d/vite.conf;
     include conf.d/deny.conf;
 }
