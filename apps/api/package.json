@@ -1,4 +1,5 @@
 {
+  "name": "@rhythm.place/api",
   "scripts": {
     "dev": "bun run --hot src/index.ts"
   },

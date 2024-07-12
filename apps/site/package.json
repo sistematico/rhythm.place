@@ -1,11 +1,11 @@
 {
-  "name": "site",
+  "name": "@rhythm.place/site",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc && vite build",
+    "dev": "bunx --bun vite",
+    "build": "bunx --bun vite build",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -25,6 +25,11 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
+      - name: Add Bun to PATH
+        shell: bash
+        run: |
+          echo "/home/nginx/.bun/bin" >> $GITHUB_PATH
+
       - name: Install Vite using Bun
         uses: appleboy/ssh-action@master
         with:
@@ -35,5 +40,5 @@ jobs:
           script: |
             cd ${{ secrets.PROJECT_PATH }}/apps/site
             [ ! -f .env ] && cp .env.prod .env
-            /home/nginx/.bun/bin/bun install
-            /home/nginx/.bun/bin/bun run build
+            bun install
+            bun run build
