@@ -35,7 +35,7 @@ output.icecast(%mp3,
   port=8000, 
   password="hackme", 
   mount="main", 
-  volume(main, volume=-0.1))  
+  main)
 
 output.icecast(%mp3, 
   name='Rhythm Place - Dance',
@@ -46,7 +46,7 @@ output.icecast(%mp3,
   port=8002, 
   password="hackme", 
   mount="dance", 
-  volume(dance, volume=-0.1))
+  dance)
 
 output.icecast(%mp3, 
   name='Rhythm Place - Rock',
@@ -57,7 +57,7 @@ output.icecast(%mp3,
   port=8004, 
   password="hackme", 
   mount="rock",
-  volume(rock, volume=-0.1)) 
+  rock) 
 
 output.icecast(%mp3, 
   name='Rhythm Place - 70s',
@@ -68,7 +68,7 @@ output.icecast(%mp3,
   port=8006, 
   password="hackme", 
   mount="seventies", 
-  volume(seventies, volume=-0.1))
+  seventies)
 
 output.icecast(%mp3, 
   name='Rhythm Place - 80s',
@@ -79,7 +79,7 @@ output.icecast(%mp3,
   port=8008, 
   password="hackme", 
   mount="eighties", 
-  volume(eighties, volume=-0.1))
+  eighties)
 
 output.icecast(%mp3, 
   name='Rhythm Place - 90s',
@@ -90,5 +90,4 @@ output.icecast(%mp3,
   port=8010, 
   password="hackme", 
   mount="nineties", 
-  volume(nineties, volume=-0.1))
-
+  nineties)
