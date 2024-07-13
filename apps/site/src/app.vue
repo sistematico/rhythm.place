@@ -32,6 +32,9 @@ onMounted(() => {
         <Plyr />
       </div>
       <div>
+        <iframe src="https://chat.rhythm.place" />
+      </div>
+      <div>
         <Form />
       </div>
     </div>

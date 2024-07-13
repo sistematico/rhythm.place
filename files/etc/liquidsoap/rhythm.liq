@@ -1,6 +1,6 @@
 #!/usr/bin/env liquidsoap
 
-rhytm = sleeper(delay=.60, single("say:Rhythm Place"))
+rhythm = sleeper(delay=.60, single("say:Rhythm Place"))
 
 # p = playlist("/music")
 # s = request.dynamic(rq)
@@ -27,7 +27,7 @@ seventies = next('70s')
 eighties = next('80s')
 nineties = next('90s')
 
-main = fallback([cross(main), rhythm])
+main = cross(main)
 dance = fallback([cross(dance), rhythm])
 rock = fallback([cross(rock), rhythm])
 seventies = fallback([cross(seventies), rhythm])
@@ -48,7 +48,7 @@ output.icecast(%mp3,
   port=9000, 
   password="hackme", 
   mount="main", 
-  main)
+  mksafe(main))
 
 output.icecast(%mp3, 
   name='Rhythm Place - Dance',

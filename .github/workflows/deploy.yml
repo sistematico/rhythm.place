@@ -38,8 +38,4 @@ jobs:
           password: ${{ secrets.SSH_PASS }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd ${{ secrets.PROJECT_PATH }}/apps/site
-            [ ! -f .env ] && cp .env.prod .env
-            bun install
-            bun run build
-            sudo /usr/bin/systemctl restart rhythm-hono.service
+            bash scripts/deploy.sh
