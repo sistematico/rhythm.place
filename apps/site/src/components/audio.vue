@@ -41,12 +41,12 @@ timerId = setInterval(async () => {
 
   const streamGenre = store.genre === 'main' ? 'Varios' : store.genre.charAt(0).toUpperCase() + store.genre.slice(1)
   const currentSource = await source.find((element: { genre: string }) => element.genre === streamGenre)
+  const title = currentSource.title.trim() !== 'undefined' ? currentSource.title : 'Rhythm Place'
+  document.querySelector(".plyr__title").innerHTML = title
 
-  if (currentSource) {
-    const title = currentSource.title.trim() !== 'undefined' ? currentSource.title : 'Rhythm Place'
+  if (currentSource) {    
     listeners.value = currentSource.listeners
     listenersPeak.value = currentSource.listener_peak
-    document.querySelector(".plyr__title").innerHTML = title
   }
 
   if (!plyr.value.player.playing) {
