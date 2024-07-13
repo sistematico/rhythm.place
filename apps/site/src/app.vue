@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import Plyr from "./components/audio.vue";
-import Dropdown from "./components/dropdown.vue";
+import { ref, onMounted } from 'vue';
+import Form from './components/form.vue';
+import Plyr from './components/audio.vue';
+import Dropdown from './components/dropdown.vue';
 
 const colors: string[] = ['#00cff8', '#3ef800', '#d513b2']
 const color = ref('#00cff8')
@@ -29,6 +30,9 @@ onMounted(() => {
       </div>
       <div>
         <Plyr />
+      </div>
+      <div>
+        <Form />
       </div>
     </div>
   </div>
