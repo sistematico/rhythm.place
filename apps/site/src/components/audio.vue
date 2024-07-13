@@ -6,24 +6,15 @@ import { controls } from '../data/controls.ts'
 
 const STREAM_URL = `${import.meta.env.VITE_STREAM_URL}`
 const JSON_URL = `${STREAM_URL}/status-json.xsl`
-let ts = +new Date()
 let timerId: ReturnType<typeof setInterval> | null = null
-const streamSource = store.genre === 'main' ? ref(`${STREAM_URL}/main?ts=${ts}`) : ref(`${STREAM_URL}/${store.genre.toLowerCase()}?ts=${ts}`)
+const streamSource = store.genre === 'main' ? ref(`${STREAM_URL}/main?ts=${+new Date()}`) : ref(`${STREAM_URL}/${store.genre.toLowerCase()}?ts=${+new Date()}`)
 const listeners = ref('0')
 const listenersPeak = ref('0')
 const plyr = ref(null)
-
 const plyrOptions = { title: "Rhythm Place", controls }
 
-const checkOffline = async () => {
-  const check = await fetch(STREAM_URL)
-  if (check.ok) return false
-  return true
-}
-
 const changeGenre = (genre: string) => {
-  const ts = +new Date()
-  document.querySelector("source").src = `${STREAM_URL}/${genre.toLowerCase()}?ts=${ts}`
+  document.querySelector("source").src = `${STREAM_URL}/${genre.toLowerCase()}?ts=${+new Date()}`
   document.querySelector("audio").load()
   plyr.value.player.play()
 }
@@ -36,7 +27,7 @@ watch(
 )
 
 timerId = setInterval(async () => {
-  const offline = await checkOffline()
+  // const offline = await checkOffline()
   const { icestats: { source } } = await (await fetch(JSON_URL)).json()
 
   const streamGenre = store.genre === 'main' ? 'Varios' : store.genre.charAt(0).toUpperCase() + store.genre.slice(1)
@@ -50,24 +41,21 @@ timerId = setInterval(async () => {
   }
 
   if (!plyr.value.player.playing) {
-    ts = +new Date()
+    document.querySelector("source").src = `${STREAM_URL}/${store.genre.toLowerCase()}?ts=${+new Date()}`
     document.querySelector("audio").load()
-    document.querySelector("source").src = `${STREAM_URL}/${store.genre.toLowerCase()}?ts=${ts}`;
   } 
   
-  if (offline || !navigator.onLine) {
-    console.info("Fonte ou navegador off-line, tentando reconectar...")
-    ts = +new Date()
-    document.querySelector("audio").load()
-    document.querySelector("source").src = `${STREAM_URL}/${store.genre.toLowerCase()}?ts=${ts}`
-    if (plyr.value.player.playing) document.querySelector("audio").play()
-  }
-}, 1500)
+  // if (offline || !navigator.onLine) {
+  //   console.info("Fonte ou navegador off-line, tentando reconectar...")
+  //   document.querySelector("source").src = `${STREAM_URL}/${store.genre.toLowerCase()}?ts=${+new Date()}`
+  //   document.querySelector("audio").load()
+  //   if (plyr.value.player.playing) document.querySelector("audio").play()
+  // }
+}, 500)
 
 onMounted(() => {
   document.getElementById("restart").addEventListener("click", () => {
-    ts = +new Date()
-    document.querySelector("source").src = `${STREAM_URL}/${store.genre.toLowerCase()}?ts=${ts}`
+    document.querySelector("source").src = `${STREAM_URL}/${store.genre.toLowerCase()}?ts=${+new Date()}`
     document.querySelector("audio").load()
     plyr.value.player.play()
   })
