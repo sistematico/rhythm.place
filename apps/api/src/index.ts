@@ -1,13 +1,13 @@
 import { Glob } from 'bun'
 
-const SONGS = '/media/rhythm'
+const SONGS = Bun.env.SONGS_PATH
 
 async function getRandomFile(genre: string): Promise<string> {
   const files = []
   let songsPath: string
 
   if (genre === '/' || genre === '') songsPath = `${SONGS}/principal`
-  else songsPath = `${SONGS}${genre}`
+  else songsPath = `${SONGS}/${genre}`
 
   const glob = new Glob(`${songsPath}/**/*.mp3`)
   for await (const file of glob.scan(songsPath)) {
