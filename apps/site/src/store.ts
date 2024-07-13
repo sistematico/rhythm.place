@@ -1,3 +1,3 @@
-import { reactive } from "vue";
+import { reactive } from 'vue'
 
-export const store = reactive({ genre: "Principal" });
+export const store = reactive({ genre: 'main' })
