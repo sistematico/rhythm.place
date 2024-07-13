@@ -1,5 +1,7 @@
 #!/usr/bin/env liquidsoap
 
+rhytm = sleeper(delay=5.1, single("say:Rhythm Place"))
+
 def cross(g)
   crossfade(fade_out=3., fade_in=3., duration=5., g)
 end
@@ -19,12 +21,12 @@ seventies = next('seventies')
 eighties = next('eighties')
 nineties = next('nineties')
 
-main = fallback([cross(main), single("say:Rhythm Place")])
-dance = fallback([cross(dance), single("say:Rhythm Place")])
-rock = fallback([cross(rock), single("say:Rhythm Place")])
-seventies = fallback([cross(seventies), single("say:Rhythm Place")])
-eighties = fallback([cross(eighties), single("say:Rhythm Place")])
-nineties = fallback([cross(nineties), single("say:Rhythm Place")])
+main = fallback([cross(main), rhythm])
+dance = fallback([cross(dance), rhythm])
+rock = fallback([cross(rock), rhythm])
+seventies = fallback([cross(seventies), rhythm])
+eighties = fallback([cross(eighties), rhythm])
+nineties = fallback([cross(nineties), rhythm])
 
 output.icecast(%mp3, 
   name='Rhythm Place',

@@ -1,11 +1,11 @@
 [Unit]
-Description=Hono api.somdomato.com
+Description=Bun API
 After=network.target
 
 [Service]
 User=nginx
-#WorkingDirectory=/var/www/somdomato
-ExecStart=/home/nginx/.bun/bin/bun /var/www/somdomato/apps/api/src/index.ts
+WorkingDirectory=/var/www/rhythm.place/apps/api
+ExecStart=/home/nginx/.bun/bin/bun /var/www/rhythm.place/apps/api/src/index.ts
 Restart=on-failure
 RestartSec=5s
 

@@ -1,4 +1,12 @@
-# 🌰 Bun Workspaces Monorepo Template
+# 🎧 Rhythm Place
+
+<p align="center">
+  <img src="./apps/site/public/img/logo.svg" alt="Rhythm Place" />
+</p>
+
+Music for all tribes.
+
+## Usage
 
 To install dependencies:
 
@@ -9,7 +17,7 @@ bun install
 To run:
 
 ```bash
-bun app/a/index.ts
+bun run app/a/index.ts
 ```
 ## 📰 References
 
@@ -21,6 +29,8 @@ bun app/a/index.ts
 
 ## 🕐 ChangeLog
 
-- `2023/12/29` - updated bun to 1.0.20
+- `2024/07/12` - updated `bun` to `1.1.18`
+  - Updated `audio` Vue component
+- `2023/12/29` - updated `bun` to `1.0.20`
 
-This project was created using `bun init` in bun v1.0.20. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+This project was created using `bun init` in bun v1.1.18. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.

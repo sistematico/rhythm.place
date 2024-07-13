@@ -42,3 +42,4 @@ jobs:
             [ ! -f .env ] && cp .env.prod .env
             bun install
             bun run build
+            sudo /usr/bin/systemctl restart rhythm-hono.service

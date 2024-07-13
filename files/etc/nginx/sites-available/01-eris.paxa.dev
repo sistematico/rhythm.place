@@ -1,7 +1,7 @@
 server {
     listen 80;
     listen [::]:80;
-    server_name psique.paxa.dev;
+    server_name eris.paxa.dev;
     return 301 https://$host$request_uri;
 }
 
@@ -9,14 +9,14 @@ server {
     listen 443 ssl default_server;
     listen [::]:443 ssl default_server;
 
-    ssl_certificate         /etc/letsencrypt/live/psique.paxa.dev/fullchain.pem;
-    ssl_certificate_key     /etc/letsencrypt/live/psique.paxa.dev/privkey.pem;
+    ssl_certificate         /etc/letsencrypt/live/eris.paxa.dev/fullchain.pem;
+    ssl_certificate_key     /etc/letsencrypt/live/eris.paxa.dev/privkey.pem;
 
-    server_name psique.paxa.dev;
-    root /var/www/psique.paxa.dev;
+    server_name eris.paxa.dev;
+    root /var/www/eris.paxa.dev;
     
     include conf.d/cache.conf;
-    include conf.d/paxa-errors.conf;
+    include conf.d/eris-errors.conf;
 
     location / {
         try_files $uri $uri/ =404;
