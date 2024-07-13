@@ -1,28 +1,17 @@
 import { Glob } from 'bun'
 
-const SONGS = '/media/songs'
-
-// async function randomFile() {
-//   const glob = new Glob("**/*.ogg")
-//   const files = []
-
-//   for await (const file of glob.scan('/music')) {
-//     files.push(`/music/${file}`)
-//   }
-
-//   return files[Math.floor(Math.random() * files.length)]
-// }
+const SONGS = '/media/rhythm'
 
 async function getRandomFile(genre: string): Promise<string> {
   const files = []
   let songsPath: string
 
-  if (genre === '/') songsPath = `${SONGS}`
+  if (genre === '/' || genre === '') songsPath = `${SONGS}/principal`
   else songsPath = `${SONGS}${genre}`
 
   const glob = new Glob(`${songsPath}/**/*.mp3`)
   for await (const file of glob.scan(songsPath)) {
-    files.push(`${songsPath}/${file}`)
+    files.push(file)
   }
 
   const index = Math.floor(Math.random() * files.length)

@@ -11,7 +11,7 @@ async function randomFile(genre: string): Promise<string> {
   const glob = new Glob(scanPath)
 
   for await (const file of glob.scan(songsPath)) {
-    files.push(`${songsPath}/${file}`)
+    files.push(file)
   }
 
   return files[Math.floor(Math.random() * files.length)]
