@@ -32,7 +32,9 @@ onMounted(() => {
         <Plyr />
       </div>
       <div>
-        <iframe src="https://chat.rhythm.place" />
+        <div class="container-iframe"> 
+          <iframe class="responsive-iframe" src="https://gamja.somdomato.com/?channels=%23rhythm&nick=%7Brhythm_*%7D" />
+        </div>
       </div>
       <div>
         <Form />
@@ -43,6 +45,24 @@ onMounted(() => {
 </template>
 <style scoped lang="scss">
 $color: v-bind(color);
+
+.container-iframe {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding-top: 56.25%; /* 16:9 Aspect Ratio */
+}
+
+.responsive-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
 
 // .controls {
 //   display: grid;
