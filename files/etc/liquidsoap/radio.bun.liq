@@ -1,11 +1,6 @@
 #!/usr/bin/env liquidsoap
 
-rhytm = sleeper(delay=.60, single("say:Rhythm Place"))
-
-# p = playlist("/music")
-# s = request.dynamic(rq)
-# r = fallback(track_sensitive=false, [p,s])
-# m = mksafe(r)
+rhytm = sleeper(delay=5.1, single("say:Rhythm Place"))
 
 def cross(g)
   crossfade(fade_out=3., fade_in=3., duration=5., g)
@@ -13,8 +8,7 @@ end
 
 def next(g)
   def request_function() =
-    lines = process.read.lines("curl https://api.rhythm.place/#{g}")
-    uri = list.hd(default="",lines)
+    uri = list.hd(process.read.lines("SONGS_PATH=/media/songs /home/liquidsoap/.bun/bin/bun /var/www/rhythm.place/apps/api/src/engine.ts #{g}"))
     request.create(uri)
   end
   request.dynamic(request_function)
@@ -33,11 +27,6 @@ rock = fallback([cross(rock), rhythm])
 seventies = fallback([cross(seventies), rhythm])
 eighties = fallback([cross(eighties), rhythm])
 nineties = fallback([cross(nineties), rhythm])
-
-# output.icecast(%vorbis,
-#   host = "icecast", port = 8000,
-#   password = "hackme", mount = "radio.ogg",
-#   m)
 
 output.icecast(%mp3, 
   name='Rhythm Place',
