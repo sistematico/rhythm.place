@@ -17,9 +17,9 @@ end
 main = next('main')
 dance = next('dance')
 rock = next('rock')
-seventies = next('seventies')
-eighties = next('eighties')
-nineties = next('nineties')
+seventies = next('70s')
+eighties = next('80s')
+nineties = next('90s')
 
 main = fallback([cross(main), rhythm])
 dance = fallback([cross(dance), rhythm])
