@@ -1,7 +1,8 @@
 {
   "name": "@rhythm.place/site",
+  "author": "Lucas Saliés Brum <paxa@paxa.dev> (https://paxa.dev)",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.1",
   "type": "module",
   "scripts": {
     "dev": "bunx --bun vite",
@@ -9,14 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@skjnldsv/vue-plyr": "^7.4.0",
-    "vue": "^3.3.11"
+    "@skjnldsv/vue-plyr": "^7.5.0",
+    "vue": "^3.4.31"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^4.5.2",
-    "sass": "^1.69.7",
-    "typescript": "^5.2.2",
-    "vite": "^5.0.8",
-    "vue-tsc": "^1.8.25"
+    "@vitejs/plugin-vue": "^4.6.2",
+    "sass": "^1.77.8",
+    "typescript": "^5.5.3",
+    "vite": "^5.3.3",
+    "vue-tsc": "^1.8.27"
   }
 }

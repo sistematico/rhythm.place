@@ -13,7 +13,7 @@ const SONGS = '/media/songs'
 //   return files[Math.floor(Math.random() * files.length)]
 // }
 
-async function getRandomFile(genre = '/'): Promise<string> {
+async function getRandomFile(genre: string): Promise<string> {
   const files = []
   let songsPath: string
 
@@ -30,7 +30,7 @@ async function getRandomFile(genre = '/'): Promise<string> {
 }
 
 const server = Bun.serve({
-  port: 3333,
+  port: 4444,
   async fetch (req) {
     const path = new URL(req.url).pathname
     

@@ -1,6 +1,6 @@
 {
   "name": "rhythm.place",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Lucas Saliés Brum <paxa@paxa.dev> (https://paxa.dev)",
   "type": "module",
   "workspaces": [

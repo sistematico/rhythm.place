@@ -28,7 +28,7 @@
     <hostname>rhythm.place</hostname>
 
     <listen-socket>
-        <port>8000</port>
+        <port>9000</port>
         <mount-name>/main</mount-name>
         <charset>UTF-8</charset>
         <stream-name>Rhythm Place</stream-name>
@@ -39,37 +39,37 @@
     </listen-socket>
 
     <listen-socket>
-        <port>8002</port>
+        <port>9002</port>
         <mount-name>/dance</mount-name>
         <charset>UTF-8</charset>
     </listen-socket>
 
     <listen-socket>
-        <port>8004</port>
+        <port>9004</port>
         <mount-name>/rock</mount-name>
         <charset>UTF-8</charset>
     </listen-socket>
 
     <listen-socket>
-        <port>8006</port>
+        <port>9006</port>
         <mount-name>/seventies</mount-name>
         <charset>UTF-8</charset>
     </listen-socket>
 
     <listen-socket>
-        <port>8008</port>
+        <port>9008</port>
         <mount-name>/eighties</mount-name>
         <charset>UTF-8</charset>
     </listen-socket>
 
     <listen-socket>
-        <port>8010</port>
+        <port>9010</port>
         <mount-name>/nineties</mount-name>
         <charset>UTF-8</charset>
     </listen-socket>
 
     <listen-socket>
-        <port>8443</port>
+        <port>9443</port>
         <ssl>1</ssl>
     </listen-socket>
 
@@ -85,14 +85,14 @@
         <webroot>/usr/share/icecast2/web</webroot>
         <adminroot>/usr/share/icecast2/admin</adminroot>
         <!-- <pidfile>/run/icecast2/icecast.pid</pidfile> -->
-        <pidfile>/run/icecast2.pid</pidfile>
+        <pidfile>/run/icecast2-rhythm.pid</pidfile>
         <alias source="/" destination="/status.xsl"/>
         <alias source="/status" destination="/status.xsl"/>
         <alias source="/json" destination="/status-json.xsl"/>
         <alias source="/geral" destination="/principal"/>
         <alias source="/stream" destination="/principal"/>
         <alias source="/aovivo" destination="/principal"/>
-        <ssl-certificate>/usr/share/icecast2/icecast.pem</ssl-certificate>
+        <ssl-certificate>/usr/share/icecast2/icecast-rhythm.pem</ssl-certificate>
     </paths>
 
     <logging>

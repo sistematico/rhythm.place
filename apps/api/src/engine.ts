@@ -1,14 +1,20 @@
-import fg from "fast-glob";
+import { Glob } from 'bun'
 
 const genre = Bun.argv[2] || 'main';
 const songsPath = Bun.env.SONGS_PATH;
 if (!songsPath) throw new Error("SONGS_PATH not set");
 
-function randomFile(genre: string): string {
-  const scanPath = genre === 'main' ? `${songsPath}/**/*.mp3` : `${songsPath}/${genre}/**/*.mp3`
-  const files = fg.globSync(scanPath, { absolute: true });
-  const index = Math.round(Math.random() * (files.length - 1));
-  return files[index];
+async function randomFile(genre: string): Promise<string> {
+  const files = []
+  const scanPath = genre === 'main' || genre === '' ? `${songsPath}/**/*.mp3` : `${songsPath}/${genre}/**/*.mp3`
+
+  const glob = new Glob(scanPath)
+
+  for await (const file of glob.scan(songsPath)) {
+    files.push(`${songsPath}/${file}`)
+  }
+
+  return files[Math.floor(Math.random() * files.length)]
 }
 
-Bun.write(Bun.stdout, randomFile(genre));
+Bun.write(Bun.stdout, await randomFile(genre))

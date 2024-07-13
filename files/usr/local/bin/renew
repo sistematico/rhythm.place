@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-cat /etc/letsencrypt/live/rhythm.place/fullchain.pem /etc/letsencrypt/live/rhythm.place/privkey.pem > /usr/share/icecast2/icecast.pem
-
-chmod 666 /usr/share/icecast2/icecast.pem
