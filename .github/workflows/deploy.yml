@@ -1,4 +1,4 @@
-name: Vite Deploy
+name: Rhythm Place Deploy
 
 on:
   push:

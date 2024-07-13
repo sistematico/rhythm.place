@@ -4,6 +4,8 @@
   <img src="./apps/site/public/img/logo.svg" alt="Rhythm Place" />
 </p>
 
+[![Deploy](https://github.com/sistematico/rhythm.place/actions/workflows/deploy.yml/badge.svg)](https://github.com/sistematico/rhythm.place/actions/workflows/deploy.yml)
+
 Music for all tribes.
 
 ## Usage
@@ -17,7 +19,7 @@ bun install
 To run:
 
 ```bash
-bun run app/a/index.ts
+bun run apps/api/index.ts
 ```
 ## 📰 References
 
@@ -29,8 +31,10 @@ bun run app/a/index.ts
 
 ## 🕐 ChangeLog
 
+- `2024/07/13` - updated `bun` to `1.1.20`
+  - updated `hono` Vue component
 - `2024/07/12` - updated `bun` to `1.1.18`
-  - Updated `audio` Vue component
+  - updated `audio` Vue component
 - `2023/12/29` - updated `bun` to `1.0.20`
 
 This project was created using `bun init` in bun v1.1.18. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.

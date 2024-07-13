@@ -7,7 +7,7 @@ async function getRandomFile(genre: string): Promise<string> {
   let songsPath: string
 
   if (genre === '/' || genre === '') songsPath = `${SONGS}/principal`
-  else songsPath = `${SONGS}/${genre}`
+  else songsPath = `${SONGS}${genre}`
 
   const glob = new Glob(`${songsPath}/**/*.mp3`)
   for await (const file of glob.scan(songsPath)) {
