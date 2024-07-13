@@ -30,7 +30,7 @@ nineties = fallback([cross(nineties), rhythm])
 
 output.icecast(%mp3, 
   name='Rhythm Place',
-  genre='Various',
+  genre='Varios',
   description='O melhor da música!',
   url='https://rhythm.place',
   host="localhost", 
@@ -69,7 +69,7 @@ output.icecast(%mp3,
   host="localhost", 
   port=8006, 
   password="hackme", 
-  mount="seventies", 
+  mount="70s", 
   seventies)
 
 output.icecast(%mp3, 
@@ -80,7 +80,7 @@ output.icecast(%mp3,
   host="localhost", 
   port=8008, 
   password="hackme", 
-  mount="eighties", 
+  mount="80s", 
   eighties)
 
 output.icecast(%mp3, 
@@ -91,5 +91,5 @@ output.icecast(%mp3,
   host="localhost", 
   port=8010, 
   password="hackme", 
-  mount="nineties", 
+  mount="90s", 
   nineties)

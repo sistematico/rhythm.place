@@ -39,7 +39,7 @@ timerId = setInterval(async () => {
   const offline = await checkOffline()
   const { icestats: { source } } = await (await fetch(JSON_URL)).json()
 
-  const streamGenre = store.genre === 'main' ? 'Various' : store.genre.charAt(0).toUpperCase() + store.genre.slice(1)
+  const streamGenre = store.genre === 'main' ? 'Varios' : store.genre.charAt(0).toUpperCase() + store.genre.slice(1)
   const currentSource = await source.find((element: { genre: string }) => element.genre === streamGenre)
 
   if (currentSource) {
