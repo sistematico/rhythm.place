@@ -2,9 +2,9 @@
 
 MAQUINA="eris"
 
-ssh root@$MAQUINA "mkdir -p /media/rhythm/{main,rock,dance,70s,80s,90s}"
-rsync -avzz /home/lucas/audio/rhythm/ root@$MAQUINA:/media/rhythm/principal/
-rsync -avzz files/etc/liquidsoap/ root@$MAQUINA:/etc/liquidsoap/ --exclude="*old*" --exclude="*radio*" --exclude="*bun*" --exclude="*podman*"
+ssh root@$MAQUINA "mkdir -p /media/rhythm/{main,rock,dance,70s,80s,90s} /etc/liquidsoap/rhythm/"
+#rsync -avzz /home/lucas/audio/rhythm/ root@$MAQUINA:/media/rhythm/principal/
+rsync -avzz files/etc/liquidsoap/rhythm/ root@$MAQUINA:/etc/liquidsoap/rhythm/ --exclude="*old*" --exclude="*radio*" --exclude="*bun*" --exclude="*podman*"
 scp files/etc/icecast2/rhythm.xml root@$MAQUINA:/etc/icecast2/
 scp files/etc/systemd/system/* root@$MAQUINA:/etc/systemd/system/
 scp files/etc/nginx/sites-available/* root@$MAQUINA:/etc/nginx/sites-available/

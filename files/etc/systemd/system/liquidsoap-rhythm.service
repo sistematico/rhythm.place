@@ -6,7 +6,7 @@ Documentation=http://liquidsoap.fm
 [Service]
 Type=simple
 User=liquidsoap
-ExecStart=/usr/bin/liquidsoap /etc/liquidsoap/rhythm.liq
+ExecStart=/usr/bin/liquidsoap /etc/liquidsoap/rhythm/rhythm.liq
 ExecReload=/usr/bin/kill -HUP $MAINPID
 ExecStop=/usr/bin/kill -HUP $MAINPID
 #Restart=on-failure
