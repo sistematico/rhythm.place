@@ -69,7 +69,9 @@ onUnmounted(() => {
   <div class="player-container">
     <vue-plyr ref="plyr" :options="plyrOptions">
       <audio controls crossorigin="anonymous" playsinline>
-        <source :src="streamSource" type="audio/mp3" />
+        <!-- <source :src="streamSource" type="audio/mp3" /> -->
+        <source :src="streamSource" type="audio/ogg" />
+         <!-- <source src="/path/to/audio.ogg" type="audio/ogg" /> -->
       </audio>
     </vue-plyr>
     <div class="stats">Ouvintes: {{ listeners }} Pico: {{ listenersPeak }}</div>
