@@ -7,7 +7,7 @@
     "apps/*"
   ],
   "scripts": {
-    "clean": "rm -rf node_modules bun.lockb apps/*/node_modules apps/*/bun.lockb"
+    "clean": "rm -rf node_modules bun.lockb"
   },
   "devDependencies": {
     "bun-types": "latest"
@@ -17,5 +17,8 @@
   },
   "dependencies": {
     "@skjnldsv/vue-plyr": "7.4.0"
-  }
+  },
+  "trustedDependencies": [
+    "core-js"
+  ]
 }

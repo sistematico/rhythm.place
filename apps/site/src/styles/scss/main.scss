@@ -48,10 +48,15 @@ header div img {
 }
 
 .container > div {
-  // display: table-cell; /* Make elements inside the container behave like table cells */
+  display: table-cell; /* Make elements inside the container behave like table cells */
   width: 100%;
-  max-width: 600px;
-  box-sizing: border-box;
+  max-width: 720px;
   text-align: center;
-  margin: 20px;
+  // margin: 20px;
+}
+
+@media only screen and (max-width: 600px) {
+  .container > div {
+    max-width: 100%;
+  }
 }

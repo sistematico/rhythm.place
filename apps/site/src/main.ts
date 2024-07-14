@@ -1,9 +1,15 @@
+import '@/styles/scss/main.scss'
+import '@/styles/css/plyr.css'
 import { createApp } from 'vue'
-import './assets/scss/main.scss'
 import app from './app.vue'
 import VuePlyr from '@skjnldsv/vue-plyr'
-import './assets/css/plyr.css'
+import { controls } from '@/data/controls'
+
+const options = {
+  title: 'Rhythm Place',
+  controls
+}
 
 createApp(app)
-  .use(VuePlyr)
+  .use(VuePlyr, { plyr: options })
   .mount('#app')
