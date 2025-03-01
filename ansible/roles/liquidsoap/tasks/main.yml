@@ -23,4 +23,5 @@
     - main.liq
     - config.liq
     - playlist.liq
+    - node.liq
     - output.liq

@@ -1,27 +1,9 @@
-// src/styles/range.scss
-
-// Regras ultra-específicas para o input range
-input[type="range"].no-thumb-slider {
-  // Remover aparência padrão
-  -webkit-appearance: none !important;
-  -moz-appearance: none !important;
-  appearance: none !important;
+input[type="range"].no-thumb-slider {  
+    background: linear-gradient(to right, 
+      #60a5fa var(--range-progress, 0%), 
+      #374151 var(--range-progress, 0%)
+    ) !important;
   
-  // Estilo básico da barra
-  height: 6px !important;
-  border-radius: 6px !important;
-  outline: none !important;
-  border: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  
-  // Gradiente para mostrar progresso
-  background: linear-gradient(to right, 
-    #60a5fa var(--range-progress, 0%), 
-    #e5e7eb var(--range-progress, 0%)
-  ) !important;
-  
-  // Configuração específica para cada navegador
   // Chrome, Safari, Edge, Opera
   &::-webkit-slider-thumb {
     -webkit-appearance: none !important;
@@ -59,35 +41,4 @@ input[type="range"].no-thumb-slider {
     opacity: 0 !important;
     cursor: pointer !important;
   }
-  
-  // Rastrear a barra
-  &::-webkit-slider-runnable-track {
-    height: 6px !important;
-    border: none !important;
-    border-radius: 6px !important;
-    background: transparent !important; // Transparente porque usamos o gradiente
-  }
-  
-  &::-moz-range-track {
-    height: 6px !important;
-    border: none !important;
-    border-radius: 6px !important;
-    background: transparent !important;
-  }
-  
-  &::-ms-track {
-    height: 6px !important;
-    border: none !important;
-    border-radius: 6px !important;
-    background: transparent !important;
-    color: transparent !important;
-  }
-}
-
-// Tema escuro
-.dark input[type="range"].no-thumb-slider {
-  background: linear-gradient(to right, 
-    #60a5fa var(--range-progress, 0%), 
-    #374151 var(--range-progress, 0%)
-  ) !important;
 }

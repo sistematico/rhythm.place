@@ -7,7 +7,12 @@ log.stdout.set(true)
 # PID
 settings.init.daemon.pidfile.path.set("/run/liquidsoap-rhythm.pid")
 
+# Telnet
 settings.server.telnet.set(true)
+settings.server.telnet.port(1234)
+settings.server.telnet.address("127.0.0.1")
+
+# Harbor
 settings.harbor.bind_addrs.set(["0.0.0.0"])
 
 # tweak these values if you have lag, skipping, buffer underrun etc
