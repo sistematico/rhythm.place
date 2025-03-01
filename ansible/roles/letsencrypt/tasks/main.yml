@@ -1,0 +1,8 @@
+- name: Instalar o Hook do LetsEncrypt
+  ansible.builtin.copy:
+    src: etc/letsencrypt/renewal-hooks/deploy/icecast-certificates-rhythm
+    dest: /etc/letsencrypt/renewal-hooks/deploy/icecast-certificates-rhythm
+    owner: root
+    group: root
+    mode: '0755'
+    force: true

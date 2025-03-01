@@ -1,4 +1,12 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎧 Rhythm Place
+
+<p align="center">
+  <img src="./public/images/logo.svg" alt="Rhythm Place" />
+</p>
+
+[![Deploy](https://github.com/sistematico/rhythm.place/actions/workflows/deploy.yml/badge.svg)](https://github.com/sistematico/rhythm.place/actions/workflows/deploy.yml)
+
+Music for all tribes.
 
 ## Getting Started
 

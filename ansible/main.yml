@@ -1,0 +1,11 @@
+---
+- name: Executa múltiplas roles
+  hosts: all
+  gather_facts: true
+
+  roles:
+    - letsencrypt
+    - nginx
+    - systemd
+    - icecast
+    - liquidsoap

@@ -1,0 +1,43 @@
+- name: Alterar as unidades do systemd
+  ansible.builtin.copy:
+    src: "etc/systemd/system/{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+    owner: root
+    group: root
+    mode: "0644"
+  with_items:
+    - icecast2-rhythm.service
+    - liquidsoap-rhythm.service
+    - rhythm.service
+
+- name: Creates /etc/sudoers.d directory
+  ansible.builtin.file:
+    path: /etc/sudoers.d
+    state: directory
+    mode: "0750"
+
+- name: >-
+    Habilitar o usuario nginx para rodar:
+    sudo /usr/bin/systemctl restart|stop|start|status rhythm,
+    sem necessidade de senha
+  community.general.sudoers:
+    name: rhythm
+    user: nginx
+    commands:
+      - /usr/bin/systemctl stop rhythm
+      - /usr/bin/systemctl start rhythm
+      - /usr/bin/systemctl restart rhythm
+      - /usr/bin/systemctl status rhythm
+    nopassword: true
+
+- name: Reiniciar as unidades do systemd
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: restarted
+    enabled: true
+    daemon_reload: true
+  with_items:
+    - icecast2-rhythm.service
+    - liquidsoap-rhythm.service
+    - rhythm.service
+    - nginx.service
