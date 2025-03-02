@@ -3,13 +3,15 @@
 import type React from 'react'
 import Image from 'next/image'
 import { useState, useRef, useEffect } from 'react'
-import { Play, Pause, Volume2, VolumeX, RefreshCcw } from 'lucide-react'
+import { Play, Pause, Volume2, VolumeX, RefreshCcw, AlertCircle } from 'lucide-react'
 import '@/styles/range.scss'
 
 export default function WebRadio() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [volume, setVolume] = useState(100)
   const [isMuted, setIsMuted] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
   const audioRef = useRef<HTMLAudioElement>(null)
   const rangeRef = useRef<HTMLInputElement>(null)
 
@@ -39,14 +41,25 @@ export default function WebRadio() {
     )
   }
 
-  const togglePlay = () => {
+  const togglePlay = async () => {
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause()
+        setIsPlaying(false)
       } else {
-        audioRef.current.play()
+        setError(null)
+        setIsLoading(true)
+        
+        try {
+          await audioRef.current.play()
+          setIsPlaying(true)
+        } catch (err) {
+          console.error('Erro ao reproduzir áudio:', err)
+          setError('Não foi possível reproduzir o áudio. Verifique sua conexão ou tente novamente mais tarde.')
+        } finally {
+          setIsLoading(false)
+        }
       }
-      setIsPlaying(!isPlaying)
     }
   }
 
@@ -62,21 +75,61 @@ export default function WebRadio() {
     }
   }
 
-  useEffect(() => {
+  const handleReload = () => {
     if (audioRef.current) {
-      audioRef.current.volume = volume / 100
+      // Recarregar o stream
+      const currentSrc = audioRef.current.src
+      audioRef.current.src = ''
+      setIsPlaying(false)
+      
+      // Pequeno timeout para garantir que a fonte seja limpa antes de definir novamente
+      setTimeout(() => {
+        if (audioRef.current) {
+          audioRef.current.src = currentSrc
+          setError(null)
+        }
+      }, 100)
+    }
+  }
+
+  useEffect(() => {
+    const audioElement = audioRef.current
+
+    if (audioElement) {
+      audioElement.volume = volume / 100
+      
+      // Adicionar event listeners para erros de áudio
+      const handleAudioError = (e: ErrorEvent) => {
+        console.error('Erro de áudio:', e)
+        setIsPlaying(false)
+        setError('Ocorreu um erro ao carregar o stream de áudio.')
+      }
+      
+      const handleCanPlay = () => {
+        setError(null)
+      }
+      
+      audioElement.addEventListener('error', handleAudioError)
+      audioElement.addEventListener('canplay', handleCanPlay)
+      
+      return () => {
+        if (audioElement) {
+          audioElement.removeEventListener('error', handleAudioError)
+          audioElement.removeEventListener('canplay', handleCanPlay)
+        }
+      }
     }
   }, [volume])
 
   return (
     <>
       <div className="w-full max-w-md bg-gray-800 rounded-xl shadow-2xl overflow-hidden">
-        <div className="flex flex-col md:flex-row gap-x-2 gap-y-6 items-center">
+        <div className="flex flex-col md:flex-row gap-x-2 gap-y-6 items-center p-4">
           {/* Album Cover */}
           <div className="w-48 h-48 rounded-lg overflow-hidden shadow-lg flex-shrink-0">
             <Image
               src={currentSong.cover || '/images/ogp.png'}
-              alt={process.env.NEXT_PUBLIC_APP_NAME!}
+              alt={process.env.NEXT_PUBLIC_APP_NAME || 'Web Radio'}
               className="w-full h-full object-cover"
               width={400}
               height={400}
@@ -90,20 +143,32 @@ export default function WebRadio() {
               </h2>
               <p className="text-gray-400">{currentSong.artist}</p>
             </div>
+            
+            {/* Error message */}
+            {error && (
+              <div className="bg-red-900/30 text-red-200 p-2 rounded mb-4 flex items-center text-sm">
+                <AlertCircle size={16} className="mr-2 flex-shrink-0" />
+                <span>{error}</span>
+              </div>
+            )}
+            
             {/* Play/Pause Button */}
             <div className="flex justify-center md:justify-start mb-6">
               <button
                 onClick={togglePlay}
-                className="bg-zinc-700 p-3 rounded-md hover:bg-purple-600 transition-all duration-500 border-2 border-zinc-900 mr-2"
+                disabled={isLoading}
+                className={`bg-zinc-700 p-3 rounded-md hover:bg-purple-600 transition-all duration-500 border-2 border-zinc-900 mr-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                {isPlaying ? (
+                {isLoading ? (
+                  <span className="text-white text-xs">Carregando...</span>
+                ) : isPlaying ? (
                   <Pause className="text-white" size={24} />
                 ) : (
                   <Play className="text-white" size={24} />
                 )}
               </button>
               <button
-                onClick={togglePlay}
+                onClick={handleReload}
                 className="bg-zinc-700 p-3 rounded-md hover:bg-purple-600 transition-all duration-500 border-2 border-zinc-900"
               >
                 <RefreshCcw className="text-white hover:animate-spin" size={24} />
@@ -135,10 +200,10 @@ export default function WebRadio() {
           </div>
         </div>
       </div>
-      {/* </div> */}
       <audio
         ref={audioRef}
-        src="https://radio.rhythm.place/main" // Replace with your actual stream URL
+        src="https://radio.rhythm.place/main" // Substitua pela sua URL de stream real
+        preload="none"
         className="hidden"
       />
     </>

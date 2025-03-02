@@ -6,6 +6,6 @@
   roles:
     - letsencrypt
     - nginx
-    - systemd
     - icecast
     - liquidsoap
+    - systemd

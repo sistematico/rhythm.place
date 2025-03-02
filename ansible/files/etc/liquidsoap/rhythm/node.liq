@@ -5,12 +5,14 @@
 #node = request.dynamic(autodj)
 
 # Define uma playlist dinâmica que pode ser atualizada em tempo real
-dynamic_playlist = request.dynamic(id="dynamic_playlist")
+dynamic_playlist = request.dynamic(fun () -> request.create(""), id="dynamic_playlist")
 
 # Função para adicionar uma nova faixa à playlist dinâmica
 def add_track_to_playlist(path)
-  dynamic_playlist.push(request.create(path))
+  r = request.create(path)
+  request.queue(~source=dynamic_playlist, r)
 end
+
 
 # Registra o comando personalizado 'custom.add_track' no servidor Telnet
 server.register(namespace="custom", name="add_track", description="Adiciona uma faixa à playlist dinâmica", f=add_track_to_playlist)

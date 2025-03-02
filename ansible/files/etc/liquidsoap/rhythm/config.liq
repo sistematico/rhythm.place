@@ -9,7 +9,7 @@ settings.init.daemon.pidfile.path.set("/run/liquidsoap-rhythm.pid")
 
 # Telnet
 settings.server.telnet.set(true)
-settings.server.telnet.port(1234)
+settings.server.telnet.port := 1234
 settings.server.telnet.address("127.0.0.1")
 
 # Harbor
