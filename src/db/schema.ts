@@ -1,4 +1,4 @@
-import { integer, pgTable, varchar, text } from 'drizzle-orm/pg-core'
+import { integer, pgTable, varchar, text, boolean, timestamp } from 'drizzle-orm/pg-core'
 
 export const users = pgTable('users', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -15,4 +15,12 @@ export const songs = pgTable('songs', {
   album: text(),
   duration: integer(),
   bitrate: integer()
+})
+
+export const requests = pgTable('requests', {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  songId: integer().references(() => songs.id).notNull(),
+  createdAt: timestamp().defaultNow().notNull(),
+  dispatched: boolean().default(false).notNull(),
+  dispatchedAt: timestamp()
 })

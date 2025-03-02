@@ -18,5 +18,4 @@ settings.harbor.bind_addrs.set(["0.0.0.0"])
 # tweak these values if you have lag, skipping, buffer underrun etc
 settings.frame.duration.set(0.04)
 settings.root.max_latency.set(30.)
-
 set("request.grace_time", 3.0)
