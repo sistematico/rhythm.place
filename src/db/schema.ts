@@ -17,6 +17,13 @@ export const songs = pgTable('songs', {
   bitrate: integer()
 })
 
+export const history = pgTable('history', {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  songId: integer().references(() => songs.id).notNull(),
+  createdAt: timestamp().defaultNow().notNull(),
+  dispatchedAt: timestamp()
+})
+
 export const requests = pgTable('requests', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   songId: integer().references(() => songs.id).notNull(),

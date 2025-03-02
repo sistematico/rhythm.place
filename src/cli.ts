@@ -1,6 +1,10 @@
 import { db } from '@/db'
-import { songs, requests } from '@/db/schema'
+import { songs, history, requests } from '@/db/schema'
 import { sql, eq } from 'drizzle-orm'
+
+// type Song = typeof songs.$inferSelect
+type Song = typeof songs.$inferSelect
+// type History = typeof history.$inferInsert
 
 async function validateFile(path: string) {
   const file = Bun.file(path)
@@ -55,7 +59,6 @@ async function markRequestAsDispatched(requestId: number) {
 }
 
 async function pickSong() {
-  // Verificar se há pedidos pendentes
   const pendingRequests = await getPendingRequest()
 
   if (pendingRequests) {
@@ -65,6 +68,8 @@ async function pickSong() {
       throw new Error(`Arquivo do pedido não encontrado: ${song.filePath}`)
     
     await markRequestAsDispatched(Number(id))
+
+    addHistory(song)
     
     return song.filePath
   }
@@ -73,11 +78,20 @@ async function pickSong() {
   
   if (!await validateFile(song.filePath))
     throw new Error(`Arquivo não encontrado: ${song.filePath}`)
+
+  addHistory(song)
   
-  return song.filePath
+  Bun.write(Bun.stdout, song.filePath)
+  // return song
+}
+
+async function addHistory(song: Song) {
+  const hist: typeof history.$inferInsert = {
+    songId: song.id    
+  }
+  await db.insert(history).values(hist)
 }
 
 pickSong()
-  .then(song => Bun.write(Bun.stdout, song))
   .catch(console.error)
   .finally(() => process.exit(0))
