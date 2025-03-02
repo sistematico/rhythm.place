@@ -5,6 +5,7 @@
     owner: root
     group: root
     mode: "0644"
+    force: true
   with_items:
     - icecast2-rhythm.service
     - liquidsoap-rhythm.service
