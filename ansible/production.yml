@@ -1,0 +1,16 @@
+---
+- name: Executa múltiplas roles
+  hosts: all
+  gather_facts: true
+  become: yes
+  # ansible-vault create ansible/roles/postgres/vars/vault.yml
+  vars_files:
+    - roles/postgres/vars/vault.yml  # Carrega a senha criptografada
+
+  roles:
+    - letsencrypt
+    - nginx
+    - icecast
+    - liquidsoap
+    - postgres
+    - systemd
