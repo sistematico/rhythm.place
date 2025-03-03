@@ -1,0 +1,9 @@
+- name: Install pip
+  ansible.builtin.package:
+    name: python3-psycopg2
+    state: present
+
+# - name: Make sure psycopg2 is installed - needed for ansible postgresql stuff
+#   ansible.builtin.pip:
+#     name: psycopg2-binary==2.9.9
+#     state: present

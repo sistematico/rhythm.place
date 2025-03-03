@@ -8,6 +8,7 @@
     - roles/postgres/vars/vault.yml  # Carrega a senha criptografada
 
   roles:
+    - common
     - letsencrypt
     - nginx
     - icecast

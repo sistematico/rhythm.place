@@ -35,10 +35,10 @@
     state: started
     enabled: yes
 
-- name: Criar usuário 'agrocomm' no PostgreSQL
+- name: Criar usuário 'rhythm' no PostgreSQL
   community.postgresql.postgresql_user:
-    name: agrocomm
-    password: "{{ agrocomm_db_password }}"
+    name: rhythm
+    password: "{{ db_password }}"
     role_attr_flags: CREATEDB,LOGIN
     state: present
     login_user: postgres
@@ -46,10 +46,10 @@
   become: yes
   become_user: postgres
 
-- name: Criar banco de dados 'agrocomm' com dono
+- name: Criar banco de dados 'rhythm' com dono
   community.postgresql.postgresql_db:
-    name: agrocomm
-    owner: agrocomm
+    name: rhythm
+    owner: rhythm
     state: present
     login_user: postgres
     login_host: localhost
