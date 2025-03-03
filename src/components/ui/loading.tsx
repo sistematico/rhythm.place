@@ -1,6 +1,6 @@
 'use client';
 
-import './styles.css';
+import '@/styles/ui.scss'
 
 type LoadingSpinnerProps = {
   size?: 'sm' | 'md' | 'lg';

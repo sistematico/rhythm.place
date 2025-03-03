@@ -1,26 +1,29 @@
-'use client';
+'use client'
 
-import './styles.css';
+import '@/styles/ui.scss'
 
 type AlertProps = {
-  children: React.ReactNode;
-  variant?: 'info' | 'success' | 'warning' | 'error';
-  className?: string;
-};
-
-export function Alert({ children, variant = 'info', className = '' }: AlertProps) {
-  return <div className={`alert alert-${variant} ${className}`}>{children}</div>;
+  children: React.ReactNode
+  variant?: 'info' | 'success' | 'warning' | 'error'
+  className?: string
 }
 
-// components/ui/LoadingSpinner.tsx
-import React from 'react';
-import './styles.css';
+export function Alert({
+  children,
+  variant = 'info',
+  className = ''
+}: AlertProps) {
+  return <div className={`alert alert-${variant} ${className}`}>{children}</div>
+}
 
 type LoadingSpinnerProps = {
-  size?: 'sm' | 'md' | 'lg';
-  className?: string;
-};
+  size?: 'sm' | 'md' | 'lg'
+  className?: string
+}
 
-export function LoadingSpinner({ size = 'md', className = '' }: LoadingSpinnerProps) {
-  return <div className={`spinner spinner-${size} ${className}`}></div>;
+export function LoadingSpinner({
+  size = 'md',
+  className = ''
+}: LoadingSpinnerProps) {
+  return <div className={`spinner spinner-${size} ${className}`}></div>
 }
