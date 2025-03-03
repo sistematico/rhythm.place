@@ -3,7 +3,7 @@ import { songs, history, requests } from '@/db/schema'
 import { sql, eq } from 'drizzle-orm'
 
 // type Song = typeof songs.$inferSelect
-type Song = typeof songs.$inferSelect
+// type Song = typeof songs.$inferSelect
 // type History = typeof history.$inferInsert
 
 async function validateFile(path: string) {
@@ -68,10 +68,9 @@ async function pickSong() {
       throw new Error(`Arquivo do pedido não encontrado: ${song.filePath}`)
     
     await markRequestAsDispatched(Number(id))
-
-    addHistory(song)
+    await db.insert(history).values({ songId: song.id, dispatchedAt: new Date() })
     
-    return song.filePath
+    Bun.write(Bun.stdout, song.filePath)
   }
   
   const song = await getRandomSong()
@@ -79,17 +78,9 @@ async function pickSong() {
   if (!await validateFile(song.filePath))
     throw new Error(`Arquivo não encontrado: ${song.filePath}`)
 
-  addHistory(song)
+  await db.insert(history).values({ songId: song.id, dispatchedAt: new Date() })
   
   Bun.write(Bun.stdout, song.filePath)
-  // return song
-}
-
-async function addHistory(song: Song) {
-  const hist: typeof history.$inferInsert = {
-    songId: song.id    
-  }
-  await db.insert(history).values(hist)
 }
 
 pickSong()

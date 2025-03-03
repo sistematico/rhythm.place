@@ -1,12 +1,12 @@
 #!/usr/bin/liquidsoap
 
-log.file.path := "/var/log/liquidsoap/liquidsoap.log"
-log.stdout := true
-settings.server.telnet := true
-settings.harbor.bind_addrs.set := ["0.0.0.0"]
+log.file.path.set("/var/log/liquidsoap/liquidsoap.log")
+log.stdout.set(true)
+settings.server.telnet.set(true)
+settings.harbor.bind_addrs.set(["0.0.0.0"])
 
 def requests() =
-  result = list.hd(default="", process.read.lines("bun /var/www/rhythm.place/src/cli.ts"))
+  result = list.hd(default="", process.read.lines("/home/liquidsoap/.bun/bin/bun /var/www/rhythm.place/src/cli.ts"))
   [request.create(result)]
 end
 

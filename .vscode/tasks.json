@@ -7,6 +7,13 @@
 			"type": "bun",
 			"script": "dev",
 			"problemMatcher": []
+		},
+		{
+			"label": "bun: db:studio",
+			"detail": "bunx drizzle-kit studio - package.json",
+			"type": "bun",
+			"script": "db:studio",
+			"problemMatcher": []
 		}
 	]
 }
