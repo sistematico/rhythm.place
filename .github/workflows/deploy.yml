@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      force_deploy:
+        description: 'Forçar deploy mesmo com testes falhando'
+        required: false
+        default: 'false'
 
 jobs:
   deploy:

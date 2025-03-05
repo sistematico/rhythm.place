@@ -1,18 +1,28 @@
 [Unit]
-Description=Next.js Service (Rhythm Place)
+Description=Rhythm.place Next.js Application
 After=network.target
 
 [Service]
 Type=simple
 User=nginx
-#MemoryAccounting=true
-#MemoryHigh=512M
-#MemoryMax=1024M
 WorkingDirectory=/var/www/rhythm.place
-Environment="NODE_ENV=production"
-ExecStart=/home/nginx/.bun/bin/bun run start
+ExecStart=/home/nginx/.bun/bin/bun start
+ExecStop=/bin/kill -TERM $MAINPID
 Restart=on-failure
+RestartSec=10s
+# Limitar tentativas de reinicialização para evitar falhas em cascata
+StartLimitIntervalSec=60
+StartLimitBurst=3
+# Garantir que o serviço seja considerado "falho" se não iniciar corretamente
+TimeoutStartSec=30s
+# Verificação de saúde com systemd (disponível em versões mais recentes do systemd)
+ExecStartPost=/bin/sh -c 'sleep 5 && curl -s -f http://localhost:3000/api/health || exit 1'
+# Arquivo de ambiente
+EnvironmentFile=-/var/www/rhythm.place/.env.production
+# Configurações de segurança
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
 
 [Install]
-# start the app automatically
 WantedBy=multi-user.target
