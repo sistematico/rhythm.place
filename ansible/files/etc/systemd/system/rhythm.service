@@ -16,7 +16,7 @@ StartLimitBurst=3
 # Garantir que o serviço seja considerado "falho" se não iniciar corretamente
 TimeoutStartSec=30s
 # Verificação de saúde com systemd (disponível em versões mais recentes do systemd)
-ExecStartPost=/bin/sh -c 'sleep 5 && curl -s -f http://localhost:3000/api/health || exit 1'
+ExecStartPost=/bin/sh -c 'sleep 5 && curl -s -f http://localhost:4080/api/health || exit 1'
 # Arquivo de ambiente
 EnvironmentFile=-/var/www/rhythm.place/.env.production
 # Configurações de segurança

@@ -6,7 +6,7 @@ DEPLOY_TIMESTAMP=$(date +%Y%m%d%H%M%S)
 BACKUP_DIR="/var/backups/rhythm"
 # CURRENT_DIR=${{ secrets.PROJECT_PATH }}
 CURRENT_DIR="/var/www/rhythm.place"
-HEALTH_CHECK_URL="http://localhost:3000/api/health" # Ajuste conforme sua aplicação
+HEALTH_CHECK_URL="http://localhost:4080/api/health" # Ajuste conforme sua aplicação
 MAX_HEALTH_CHECKS=10
 HEALTH_CHECK_INTERVAL=3
 
@@ -76,6 +76,7 @@ git clean -fxd
 
 # Restaurar variáveis de ambiente
 [ -f /tmp/env.rhythm ] && cp /tmp/env.rhythm .env.production
+cp -f .env.production .env
 
 # Instalar dependências e construir
 echo "Instalando dependências..."
