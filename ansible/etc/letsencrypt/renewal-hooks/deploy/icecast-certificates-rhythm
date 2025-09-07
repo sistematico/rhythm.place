@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -eu
+ICECAST_PATH="/usr/share/icecast2"
+umask 077
+cat /etc/letsencrypt/live/somdomato.com/fullchain.pem /etc/letsencrypt/live/somdomato.com/privkey.pem > $ICECAST_PATH/icecast-somdomato.pem
+chown icecast2:icecast2 $ICECAST_PATH/*.pem
+systemctl reload icecast2-somdomato.service

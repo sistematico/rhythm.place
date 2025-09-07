@@ -1,0 +1,88 @@
+---
+- name: Preparar o ambiente para o Icecast e LiquidSoap
+  hosts: all
+  become: true
+  remote_user: root
+
+  tasks:
+    - name: Garante que o grupo "icecast2" exista
+      ansible.builtin.group:
+        name: icecast2
+        state: present
+
+    - name: Adicionar os usuários nginx, liquidsoap e icecast2
+      ansible.builtin.user:
+        name: "{{ item }}"
+        group: "{{ item }}"
+        state: present
+      with_items:
+        - "nginx"
+        - "icecast2"
+        - "liquidsoap"
+
+    # LetsEncrypt
+    - name: Instalar o Hook do LetsEncrypt
+      ansible.builtin.copy:
+        src: etc/letsencrypt/renewal-hooks/deploy/icecast-certificates-rhythm
+        dest: /etc/letsencrypt/renewal-hooks/deploy/icecast-certificates-rhythm
+        owner: root
+        group: root
+        mode: '0755'
+
+    # Icecast
+    - name: Alterar as configurações do Icecast
+      ansible.builtin.copy:
+        src: etc/icecast2/rhythm.xml
+        dest: /etc/icecast2/rhythm.xml
+        owner: icecast2
+        group: icecast2
+        mode: '0644'
+
+    # LiquidSoap
+    - name: Criar o diretorio de configuracoes do LiquidSoap
+      ansible.builtin.file:
+        path: /etc/liquidsoap/rhythm
+        state: directory
+        owner: liquidsoap
+        group: liquidsoap
+        mode: '0755'
+
+    - name: Alterar as configurações do LiquidSoap
+      ansible.builtin.copy:
+        src: "etc/liquidsoap/rhythm.liq"
+        dest: "/etc/liquidsoap/rhythm.liq"
+        owner: liquidsoap
+        group: liquidsoap
+        mode: '0644'
+
+    # Nginx
+    - name: Copiar os arquivos de configuração dos sites do Nginx
+      ansible.builtin.copy:
+        src: "etc/nginx/sites.d/70-stream.rhythm.place.conf"
+        dest: "/etc/nginx/sites.d/70-stream.rhythm.place.conf"
+        owner: root
+        group: root
+        mode: '0644'
+
+    # Systemd
+    - name: Alterar as unidades do systemd
+      ansible.builtin.copy:
+        src: "etc/systemd/system/{{ item }}"
+        dest: "/etc/systemd/system/{{ item }}"
+        owner: root
+        group: root
+        mode: "0644"
+      with_items:
+        - "rhythm-icecast2.service"
+        - "rhythm-liquidsoap.service"
+
+    - name: Reiniciar as unidades do systemd
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: restarted
+        enabled: true
+        daemon_reload: true
+      with_items:
+        - "rhythm-icecast2.service"
+        - "rhythm-liquidsoap.service"
+        - "nginx.service"
