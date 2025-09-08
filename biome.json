@@ -24,6 +24,9 @@
       "a11y": {
         "noSvgWithoutTitle": "off",
         "useMediaCaption": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off"
       }
     },
     "domains": {

@@ -58,11 +58,14 @@
     # Nginx
     - name: Copiar os arquivos de configuração dos sites do Nginx
       ansible.builtin.copy:
-        src: "etc/nginx/sites.d/70-stream.rhythm.place.conf"
-        dest: "/etc/nginx/sites.d/70-stream.rhythm.place.conf"
+        src: "etc/nginx/sites.d/{{ item }}"
+        dest: "/etc/nginx/sites.d/{{ item }}"
         owner: root
         group: root
         mode: '0644'
+      loop: 
+        - "70-stream.rhythm.place.conf"
+        - "71-rhythm.place.conf"
 
     # Systemd
     - name: Alterar as unidades do systemd
@@ -72,7 +75,8 @@
         owner: root
         group: root
         mode: "0644"
-      with_items:
+      loop:
+        - "rhythm-place.service"
         - "rhythm-icecast2.service"
         - "rhythm-liquidsoap.service"
 
@@ -82,7 +86,8 @@
         state: restarted
         enabled: true
         daemon_reload: true
-      with_items:
+      loop:
+        - "rhythm-place.service"
         - "rhythm-icecast2.service"
         - "rhythm-liquidsoap.service"
         - "nginx.service"

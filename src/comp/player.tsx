@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import { Play, Pause } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Play, Pause, Radio, AlertCircle } from "lucide-react";
 
 interface AudioPlayerProps {
   streamUrl: string;
@@ -15,57 +15,150 @@ interface TrackMetadata {
   coverArt?: string;
 }
 
-export function Player({
-  streamUrl,
-  metadataUrl,
-}: AudioPlayerProps) {
+type ConnectionStatus = "connecting" | "connected" | "disconnected" | "error";
+
+export function Player({ streamUrl, metadataUrl }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.8);
   const [isMuted, setIsMuted] = useState(false);
   const [metadata, setMetadata] = useState<TrackMetadata | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
+  const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>("disconnected");
+  const [retryCount, setRetryCount] = useState(0);
+  const [isUserInitiated, setIsUserInitiated] = useState(false);
+  
   const audioRef = useRef<HTMLAudioElement>(null);
   const previousVolume = useRef(volume);
+  const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const metadataIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Limpar timeouts ao desmontar
+  useEffect(() => {
+    return () => {
+      if (retryTimeoutRef.current) {
+        clearTimeout(retryTimeoutRef.current);
+      }
+      if (metadataIntervalRef.current) {
+        clearInterval(metadataIntervalRef.current);
+      }
+    };
+  }, []);
 
   // Buscar metadados do stream Icecast
   const fetchMetadata = useCallback(async () => {
     if (!metadataUrl) return;
 
     try {
-      const response = await fetch(metadataUrl);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // timeout de 5s
+
+      const response = await fetch(metadataUrl, {
+        signal: controller.signal,
+        cache: "no-cache",
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
       const data = await response.json();
 
       if (data && (data.title || data.artist)) {
         setMetadata({
-          title: data.title || "Título desconhecido",
-          artist: data.artist || "Artista desconhecido",
+          title: data.title || "Transmissão ao vivo",
+          artist: data.artist || "Rhythm Place",
           album: data.album,
-          coverArt: data.coverArt || "/default-cover.jpg",
+          coverArt: data.coverArt,
         });
       }
     } catch (err) {
-      console.error("Erro ao buscar metadados:", err);
-      setMetadata({
-        title: "Transmissão ao vivo",
-        artist: "Estação Icecast",
-        coverArt: "/default-cover.jpg",
-      });
+      // Silenciosamente falha nos metadados, mantém os últimos conhecidos
+      console.debug("Metadados indisponíveis:", err);
+
+      // Se nunca tivemos metadados, define padrão
+      if (!metadata) {
+        setMetadata({
+          title: "Rhythm Place",
+          artist: "Música para todas as tribos",
+          coverArt: undefined,
+        });
+      }
     }
-  }, [metadataUrl]);
+  }, [metadataUrl, metadata]);
+
+  // Função para tentar conectar ao stream
+  const attemptConnection = useCallback(async () => {
+    if (!audioRef.current || !isUserInitiated) return;
+
+    setConnectionStatus("connecting");
+
+    try {
+      // Testa se o stream está acessível
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // timeout de 10s
+
+      const response = await fetch(streamUrl, {
+        method: "HEAD",
+        signal: controller.signal,
+        cache: "no-cache",
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) throw new Error(`Stream offline: ${response.status}`);
+
+      // Stream disponível, tenta reproduzir
+      audioRef.current.load();
+
+      const playPromise = audioRef.current.play();
+
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setConnectionStatus("connected");
+            setIsPlaying(true);
+            setRetryCount(0);
+          })
+          .catch((error) => {
+            console.debug("Erro ao reproduzir:", error);
+            setConnectionStatus("disconnected");
+            setIsPlaying(false);
+          });
+      }
+    } catch (error) {
+      console.debug("Stream indisponível:", error);
+      setConnectionStatus("error");
+      setIsPlaying(false);
+
+      // Retry automático com backoff exponencial
+      if (retryCount < 5 && isUserInitiated) {
+        const delay = Math.min(1000 * Math.pow(2, retryCount), 30000); // max 30s
+        setRetryCount((prev) => prev + 1);
+
+        retryTimeoutRef.current = setTimeout(() => {
+          attemptConnection();
+        }, delay);
+      }
+    }
+  }, [streamUrl, retryCount, isUserInitiated]);
 
   // Controles de áudio
   const togglePlay = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play().catch((err) => {
-          setError("Falha ao reproduzir: " + err.message);
-        });
+    if (!audioRef.current) return;
+
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+      setIsUserInitiated(false);
+      setConnectionStatus("disconnected");
+
+      // Cancela retry se estiver pausando
+      if (retryTimeoutRef.current) {
+        clearTimeout(retryTimeoutRef.current);
       }
-      setIsPlaying(!isPlaying);
+    } else {
+      setIsUserInitiated(true);
+      setRetryCount(0);
+      attemptConnection();
     }
   };
 
@@ -94,55 +187,157 @@ export function Player({
   };
 
   const refreshStream = () => {
-    setIsLoading(true);
+    setRetryCount(0);
+    setIsUserInitiated(true);
+    attemptConnection();
     fetchMetadata();
-
-    // Recarregar o áudio
-    if (audioRef.current) {
-      audioRef.current.load();
-      if (isPlaying) {
-        audioRef.current.play().catch(console.error);
-      }
-    }
-
-    setTimeout(() => setIsLoading(false), 1000);
   };
 
-  // Efeitos
+  // Event handlers para o elemento de áudio
   useEffect(() => {
-    fetchMetadata();
-
     const audio = audioRef.current;
     if (!audio) return;
 
-    const handleLoadedData = () => setIsLoading(false);
-    const handleError = () => setError("Erro ao carregar o stream de áudio");
-    const handleEnded = () => setIsPlaying(false);
+    const handleCanPlay = () => {
+      if (isUserInitiated) {
+        setConnectionStatus("connected");
+      }
+    };
 
-    audio.addEventListener("loadeddata", handleLoadedData);
-    audio.addEventListener("error", handleError);
+    const handleError = (e: Event) => {
+      const audioElement = e.target as HTMLAudioElement;
+      const error = audioElement.error;
+
+      // Suprime logs de erro do console
+      e.preventDefault();
+      e.stopPropagation();
+
+      console.debug("Erro de áudio:", error?.code, error?.message);
+
+      if (isUserInitiated) {
+        setConnectionStatus("error");
+
+        // Tenta reconectar automaticamente
+        if (retryCount < 5) {
+          const delay = Math.min(1000 * Math.pow(2, retryCount), 30000);
+          setRetryCount((prev) => prev + 1);
+
+          retryTimeoutRef.current = setTimeout(() => {
+            attemptConnection();
+          }, delay);
+        }
+      }
+    };
+
+    const handleStalled = () => {
+      console.debug("Stream travado");
+      if (isUserInitiated && connectionStatus === "connected") {
+        setConnectionStatus("connecting");
+      }
+    };
+
+    const handleWaiting = () => {
+      console.debug("Aguardando dados...");
+      if (isUserInitiated) {
+        setConnectionStatus("connecting");
+      }
+    };
+
+    const handlePlaying = () => {
+      setConnectionStatus("connected");
+      setIsPlaying(true);
+      setRetryCount(0);
+    };
+
+    const handlePause = () => {
+      setIsPlaying(false);
+    };
+
+    const handleEnded = () => {
+      setIsPlaying(false);
+      setConnectionStatus("disconnected");
+
+      // Para streams, "ended" geralmente significa desconexão
+      if (isUserInitiated) {
+        attemptConnection();
+      }
+    };
+
+    audio.addEventListener("canplay", handleCanPlay);
+    audio.addEventListener("error", handleError, true);
+    audio.addEventListener("stalled", handleStalled);
+    audio.addEventListener("waiting", handleWaiting);
+    audio.addEventListener("playing", handlePlaying);
+    audio.addEventListener("pause", handlePause);
     audio.addEventListener("ended", handleEnded);
 
-    // Poll para atualizar metadados periodicamente
-    const metadataInterval = setInterval(fetchMetadata, 30000);
+    return () => {
+      audio.removeEventListener("canplay", handleCanPlay);
+      audio.removeEventListener("error", handleError, true);
+      audio.removeEventListener("stalled", handleStalled);
+      audio.removeEventListener("waiting", handleWaiting);
+      audio.removeEventListener("playing", handlePlaying);
+      audio.removeEventListener("pause", handlePause);
+      audio.removeEventListener("ended", handleEnded);
+    };
+  }, [isUserInitiated, connectionStatus, retryCount, attemptConnection]);
+
+  // Poll para metadados quando conectado
+  useEffect(() => {
+    if (connectionStatus === "connected") {
+      fetchMetadata();
+
+      // Atualiza metadados a cada 30 segundos
+      metadataIntervalRef.current = setInterval(fetchMetadata, 30000);
+    } else {
+      if (metadataIntervalRef.current) {
+        clearInterval(metadataIntervalRef.current);
+      }
+    }
 
     return () => {
-      audio.removeEventListener("loadeddata", handleLoadedData);
-      audio.removeEventListener("error", handleError);
-      audio.removeEventListener("ended", handleEnded);
-      clearInterval(metadataInterval);
+      if (metadataIntervalRef.current) {
+        clearInterval(metadataIntervalRef.current);
+      }
     };
-  }, [fetchMetadata]);
+  }, [connectionStatus, fetchMetadata]);
+
+  // Status visual baseado na conexão
+  const getStatusColor = () => {
+    switch (connectionStatus) {
+      case "connected":
+        return "text-green-500";
+      case "connecting":
+        return "text-yellow-500 animate-pulse";
+      case "error":
+        return "text-red-500";
+      default:
+        return "text-gray-400";
+    }
+  };
+
+  const getStatusText = () => {
+    switch (connectionStatus) {
+      case "connected":
+        return "Ao vivo";
+      case "connecting":
+        return `Conectando${retryCount > 0 ? ` (tentativa ${retryCount}/5)` : "..."}`;
+      case "error":
+        return "Fora do ar";
+      default:
+        return "Clique para ouvir";
+    }
+  };
 
   return (
     <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg p-4 w-80 border border-gray-200/50">
-      {/* Áudio element */}
+      {/* Áudio element com tratamento de erro silencioso */}
       <audio
         ref={audioRef}
         src={streamUrl}
-        preload="metadata"
+        preload="none"
+        crossOrigin="anonymous"
       />
-
 
       {/* Conteúdo do player */}
       <div className="flex items-center space-x-4">
@@ -152,27 +347,20 @@ export function Player({
             {metadata?.coverArt ? (
               <img
                 src={metadata.coverArt}
-                alt={metadata.album || "Capa do álbum"}
+                alt={metadata.album || "Capa"}
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
-                <svg
-                  className="w-8 h-8 text-gray-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M18 3a1 1 0 00-1.447-.894L8.763 6H5a3 3 0 000 6h.28l1.771 5.316A1 1 0 008 18h1a1 1 0 001-1v-4.382l6.553 3.276A1 1 0 0018 15V3z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+                <Radio className={`w-8 h-8 ${getStatusColor()}`} />
               </div>
             )}
           </div>
 
-          {isLoading && (
+          {connectionStatus === "connecting" && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-lg">
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
             </div>
@@ -182,10 +370,15 @@ export function Player({
         {/* Informações da faixa */}
         <div className="flex-1 min-w-0">
           <div className="text-sm font-medium text-gray-900 truncate">
-            {metadata?.title || "Carregando..."}
+            {metadata?.title || "Rhythm Place"}
           </div>
           <div className="text-xs text-gray-600 truncate">
-            {metadata?.artist || "Estação Icecast"}
+            {metadata?.artist || "Música para todas as tribos"}
+          </div>
+
+          {/* Status da conexão */}
+          <div className={`text-xs mt-0.5 ${getStatusColor()}`}>
+            {getStatusText()}
           </div>
 
           {/* Controles */}
@@ -193,8 +386,8 @@ export function Player({
             <button
               type="button"
               onClick={togglePlay}
-              disabled={isLoading}
-              className="p-1.5 rounded-full bg-gray-800 hover:bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 disabled:opacity-50"
+              disabled={connectionStatus === "connecting"}
+              className="p-1.5 rounded-full bg-gray-800 hover:bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               {isPlaying ? (
                 <Pause className="w-3 h-3" />
@@ -203,20 +396,22 @@ export function Player({
               )}
             </button>
 
-            <button
-              type="button"
-              onClick={refreshStream}
-              disabled={isLoading}
-              className="p-1.5 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 rounded-full disabled:opacity-50"
-            >
-              <RefreshIcon className="w-3.5 h-3.5" />
-            </button>
+            {connectionStatus === "error" && (
+              <button
+                type="button"
+                onClick={refreshStream}
+                className="p-1.5 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 rounded-full transition-all"
+                title="Tentar novamente"
+              >
+                <RefreshIcon className="w-3.5 h-3.5" />
+              </button>
+            )}
 
             <div className="flex items-center space-x-1.5">
               <button
                 type="button"
                 onClick={toggleMute}
-                className="p-1 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 rounded-full"
+                className="p-1 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 rounded-full transition-all"
               >
                 {isMuted || volume === 0 ? (
                   <MuteIcon className="w-4 h-4" />
@@ -241,15 +436,18 @@ export function Player({
         </div>
       </div>
 
-      {error && (
-        <div className="mt-3 text-xs text-red-600 bg-red-50 py-1 px-2 rounded">
-          {error}
+      {/* Mensagem de erro amigável */}
+      {connectionStatus === "error" && retryCount >= 5 && (
+        <div className="mt-3 text-xs text-gray-600 bg-gray-50 py-1.5 px-2 rounded-lg flex items-center space-x-1">
+          <AlertCircle className="w-3 h-3" />
+          <span>A rádio está temporariamente fora do ar</span>
         </div>
       )}
     </div>
   );
 }
 
+// Ícones auxiliares
 const RefreshIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="currentColor" viewBox="0 0 20 20">
     <path

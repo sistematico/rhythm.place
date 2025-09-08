@@ -5,23 +5,28 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
-    "start": "next start",
+    "start": "next start -p 4060",
+    "devnew": "bun src/server.ts",
+    "startnew": "NODE_ENV=production node src/server.ts",
     "lint": "biome check",
     "format": "biome format --write"
   },
   "dependencies": {
+    "@libsql/client": "^0.15.14",
+    "drizzle-orm": "^0.44.5",
     "lucide-react": "^0.542.0",
     "next": "15.5.2",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@biomejs/biome": "2.2.0",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
+    "drizzle-kit": "^0.31.4",
     "tailwindcss": "^4",
-    "@biomejs/biome": "2.2.0"
+    "typescript": "^5"
   }
 }

@@ -17,7 +17,10 @@ export default function Home() {
           Música para todas as tribos
         </p>
         <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <Player streamUrl="https://stream.rhythm.place/main" metadataUrl="https://example.com/metadata" />
+          <Player 
+            streamUrl="https://stream.rhythm.place/radio.mp3" 
+            metadataUrl="https://stream.rhythm.place/status-json.xsl"
+          />
         </div>
       </main>
     </div>
