@@ -15,9 +15,8 @@ git clean -fxd -e .env -e drizzle/local.db
 cp -f .env .env.production
 
 bun install
-# bun run db:push
-# bun run db:seed
-# bun run db:scrape
+bunx drizzle-kit push
+bun ./src/db/seed.ts
 bun run build || exit 1
 
 sudo /usr/bin/systemctl stop $SERVICE
