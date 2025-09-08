@@ -48,16 +48,28 @@
         mode: '0644'
 
     # Nginx
-    - name: Copiar os arquivos de configuração dos sites do Nginx
+    - name: Copiar os arquivos dos sites do Nginx
       ansible.builtin.copy:
         src: "etc/nginx/sites.d/{{ item }}"
         dest: "/etc/nginx/sites.d/{{ item }}"
         owner: root
         group: root
         mode: '0644'
+        force: true
       loop: 
         - "70-stream.rhythm.place.conf"
         - "71-rhythm.place.conf"
+
+    - name: Copiar os arquivos de configuração dos sites do Nginx
+      ansible.builtin.copy:
+        src: "etc/nginx/conf.d/{{ item }}"
+        dest: "/etc/nginx/conf.d/{{ item }}"
+        owner: root
+        group: root
+        mode: '0644'
+      loop: 
+        - "rtm-errors.conf"
+        - "no-cache.conf"
 
     # Systemd
     - name: Alterar as unidades do systemd
