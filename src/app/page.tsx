@@ -18,8 +18,8 @@ export default function Home() {
         </p>
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <Player 
-            streamUrl="https://stream.rhythm.place/radio.mp3" 
-            metadataUrl="https://stream.rhythm.place/status-json.xsl"
+            streamUrl="https://stream.rhythm.place/main" 
+            metadataUrl="https://stream.rhythm.place/json"
           />
         </div>
       </main>

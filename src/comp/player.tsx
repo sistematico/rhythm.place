@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Play, Pause, Radio, AlertCircle } from "lucide-react";
+import { AlertCircle, Play, Pause, Radio } from "lucide-react";
 
 interface AudioPlayerProps {
   streamUrl: string;
@@ -131,7 +131,7 @@ export function Player({ streamUrl, metadataUrl }: AudioPlayerProps) {
 
       // Retry automático com backoff exponencial
       if (retryCount < 5 && isUserInitiated) {
-        const delay = Math.min(1000 * Math.pow(2, retryCount), 30000); // max 30s
+        const delay = Math.min(1000 * 2 ** retryCount, 30000); // max 30s
         setRetryCount((prev) => prev + 1);
 
         retryTimeoutRef.current = setTimeout(() => {
@@ -219,7 +219,7 @@ export function Player({ streamUrl, metadataUrl }: AudioPlayerProps) {
 
         // Tenta reconectar automaticamente
         if (retryCount < 5) {
-          const delay = Math.min(1000 * Math.pow(2, retryCount), 30000);
+          const delay = Math.min(1000 * 2 ** retryCount, 30000);
           setRetryCount((prev) => prev + 1);
 
           retryTimeoutRef.current = setTimeout(() => {
@@ -335,8 +335,7 @@ export function Player({ streamUrl, metadataUrl }: AudioPlayerProps) {
       <audio
         ref={audioRef}
         src={streamUrl}
-        preload="none"
-        crossOrigin="anonymous"
+        preload="none"                
       />
 
       {/* Conteúdo do player */}
