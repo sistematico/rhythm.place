@@ -33,7 +33,7 @@
 
     <listen-socket>
         <port>8090</port>
-        <mount-name>/radio.mp3</mount-name>
+        <mount-name>/main</mount-name>
         <charset>UTF-8</charset>
         <stream-name>Rhythm Place</stream-name>
         <stream-description>Music for all tribes</stream-description>

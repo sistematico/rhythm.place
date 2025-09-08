@@ -7,7 +7,7 @@ live = input.harbor("aovivo", port=8010, user="dj", password="hackme")
 def next()
   def request_function() =
     # Chama a API do Next.js (ajuste a porta se necessário)
-    lines = process.read.lines("curl -s http://localhost:3333/api/song")
+    lines = process.read.lines("curl -s http://localhost:4060/api/song")
     uri = list.hd(default="", lines)
     
     # Log para depuração (verifique no terminal)
@@ -32,10 +32,10 @@ output.icecast(
   name = "Radio Som do Mato",
   description = "A mais sertaneja!",
   genre = "Sertanejo",
-  url = "https://somdomato.com",
+  url = "https://rhythm.place",
   host = "localhost", 
-  port = 8000, 
+  port = 8090, 
   password = "hackme", 
-  mount = "/radio.mp3", 
+  mount = "/main", 
   encoding = "UTF-8",
   mksafe(radio))
