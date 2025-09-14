@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "next build",
     "start": "next start -p 4060",
     "devnew": "bun src/server.ts",
     "startnew": "NODE_ENV=production node src/server.ts",
