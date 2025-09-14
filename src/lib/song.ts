@@ -4,7 +4,7 @@ export async function getAllFilesRecursive(dir: string): Promise<string[]> {
   const dirents = await readdir(dir, { recursive: true, withFileTypes: true });
   const files: string[] = [];
   for (const dirent of dirents) {
-    if (dirent.isFile()) {
+    if (dirent.isFile() && dirent.name.endsWith(".mp3")) {
       files.push(`${dir}/${dirent.name}`); // Adjust path as needed
     }
   }

@@ -49,3 +49,5 @@ drizzle/**
 
 # custom
 *.old*
+*.mp3
+*.wav
