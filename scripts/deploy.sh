@@ -11,8 +11,9 @@ PROJECT_DIR=/var/www/$NAME
 cp -a "$PROJECT_DIR" "$TEMP_DIR"
 cd "$TEMP_DIR" || exit 1
 
-git clean -fxd -e .env -e drizzle/local.db
-cp -f .env .env.production
+git clean -fxd
+#git clean -fxd -e .env -e drizzle/local.db
+#cp -f .env .env.production
 
 bun install
 bunx drizzle-kit push

@@ -14,7 +14,7 @@ ExecStop=/bin/kill -TERM $MAINPID
 Restart=on-failure
 RestartSec=10s
 # Limitar tentativas de reinicialização para evitar falhas em cascata
-StartLimitIntervalSec=60
+#StartLimitIntervalSec=60
 StartLimitBurst=3
 # Garantir que o serviço seja considerado "falho" se não iniciar corretamente
 TimeoutStartSec=30s
