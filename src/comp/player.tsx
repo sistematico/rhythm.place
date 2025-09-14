@@ -22,10 +22,11 @@ export function Player({ streamUrl, metadataUrl }: AudioPlayerProps) {
   const [volume, setVolume] = useState(0.8);
   const [isMuted, setIsMuted] = useState(false);
   const [metadata, setMetadata] = useState<TrackMetadata | null>(null);
-  const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>("disconnected");
+  const [connectionStatus, setConnectionStatus] =
+    useState<ConnectionStatus>("disconnected");
   const [retryCount, setRetryCount] = useState(0);
   const [isUserInitiated, setIsUserInitiated] = useState(false);
-  
+
   const audioRef = useRef<HTMLAudioElement>(null);
   const previousVolume = useRef(volume);
   const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -86,60 +87,102 @@ export function Player({ streamUrl, metadataUrl }: AudioPlayerProps) {
   }, [metadataUrl, metadata]);
 
   // Função para tentar conectar ao stream
+  // const attemptConnection = useCallback(async () => {
+  //   if (!audioRef.current || !isUserInitiated) return;
+
+  //   setConnectionStatus("connecting");
+
+  //   try {
+  //     // Testa se o stream está acessível
+  //     const controller = new AbortController();
+  //     const timeoutId = setTimeout(() => controller.abort(), 10000); // timeout de 10s
+
+  //     const response = await fetch(streamUrl, {
+  //       method: "HEAD",
+  //       signal: controller.signal,
+  //       cache: "no-cache",
+  //     });
+
+  //     clearTimeout(timeoutId);
+
+  //     if (!response.ok) throw new Error(`Stream offline: ${response.status}`);
+
+  //     // Stream disponível, tenta reproduzir
+  //     audioRef.current.load();
+
+  //     const playPromise = audioRef.current.play();
+
+  //     if (playPromise !== undefined) {
+  //       playPromise
+  //         .then(() => {
+  //           setConnectionStatus("connected");
+  //           setIsPlaying(true);
+  //           setRetryCount(0);
+  //         })
+  //         .catch((error) => {
+  //           console.debug("Erro ao reproduzir:", error);
+  //           setConnectionStatus("disconnected");
+  //           setIsPlaying(false);
+  //         });
+  //     }
+  //   } catch (error) {
+  //     console.debug("Stream indisponível:", error);
+  //     setConnectionStatus("error");
+  //     setIsPlaying(false);
+
+  //     // Retry automático com backoff exponencial
+  //     if (retryCount < 5 && isUserInitiated) {
+  //       const delay = Math.min(1000 * 2 ** retryCount, 30000); // max 30s
+  //       setRetryCount((prev) => prev + 1);
+
+  //       retryTimeoutRef.current = setTimeout(() => {
+  //         attemptConnection();
+  //       }, delay);
+  //     }
+  //   }
+  // }, [streamUrl, retryCount, isUserInitiated]);
   const attemptConnection = useCallback(async () => {
     if (!audioRef.current || !isUserInitiated) return;
 
     setConnectionStatus("connecting");
 
     try {
-      // Testa se o stream está acessível
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // timeout de 10s
-
-      const response = await fetch(streamUrl, {
-        method: "HEAD",
-        signal: controller.signal,
-        cache: "no-cache",
-      });
-
-      clearTimeout(timeoutId);
-
-      if (!response.ok) throw new Error(`Stream offline: ${response.status}`);
-
-      // Stream disponível, tenta reproduzir
+      // Remove a verificação do fetch e vai direto para o play
       audioRef.current.load();
 
-      const playPromise = audioRef.current.play();
-
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            setConnectionStatus("connected");
-            setIsPlaying(true);
-            setRetryCount(0);
-          })
-          .catch((error) => {
-            console.debug("Erro ao reproduzir:", error);
-            setConnectionStatus("disconnected");
-            setIsPlaying(false);
-          });
-      }
+      await audioRef.current.play();
+      setConnectionStatus("connected");
+      setIsPlaying(true);
+      setRetryCount(0);
     } catch (error) {
-      console.debug("Stream indisponível:", error);
-      setConnectionStatus("error");
-      setIsPlaying(false);
+      console.error("Erro ao reproduzir:", error);
 
-      // Retry automático com backoff exponencial
-      if (retryCount < 5 && isUserInitiated) {
-        const delay = Math.min(1000 * 2 ** retryCount, 30000); // max 30s
-        setRetryCount((prev) => prev + 1);
+      // Se for erro de autoplay, mostra como desconectado
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "name" in error &&
+        (error as { name?: string }).name === "NotAllowedError"
+      ) {
+        setConnectionStatus("disconnected");
+        setIsPlaying(false);
+        alert("Por favor, clique no botão play para iniciar a reprodução");
+      } else {
+        setConnectionStatus("error");
+        setIsPlaying(false);
 
-        retryTimeoutRef.current = setTimeout(() => {
-          attemptConnection();
-        }, delay);
+        // Retry automático
+        if (retryCount < 5 && isUserInitiated) {
+          const delay = Math.min(1000 * 2 ** retryCount, 30000);
+          setRetryCount((prev) => prev + 1);
+
+          retryTimeoutRef.current = setTimeout(() => {
+            attemptConnection();
+          }, delay);
+        }
       }
     }
-  }, [streamUrl, retryCount, isUserInitiated]);
+  }, [retryCount, isUserInitiated]);
 
   // Controles de áudio
   const togglePlay = () => {
@@ -335,8 +378,17 @@ export function Player({ streamUrl, metadataUrl }: AudioPlayerProps) {
       <audio
         ref={audioRef}
         src={streamUrl}
-        preload="none"                
-      />
+        preload="none"
+        crossOrigin="anonymous"
+      >
+        {/* Placeholder track for accessibility compliance */}
+        <track
+          kind="captions"
+          srcLang="en"
+          label="No captions available"
+          default
+        />
+      </audio>
 
       {/* Conteúdo do player */}
       <div className="flex items-center space-x-4">
