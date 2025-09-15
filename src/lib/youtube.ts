@@ -1,6 +1,9 @@
 import { mkdir, rm } from "node:fs/promises";
 import path from 'node:path';
 import NodeID3 from 'node-id3';
+import { YtDlp } from 'ytdlp-nodejs';
+
+const ytdlp = new YtDlp();
 
 const YT_DLP = process.env.YT_DLP_PATH || "/usr/local/bin/yt-dlp";
 
@@ -40,31 +43,18 @@ export const sanitizeFileName = (fileName: string): string =>
 // Obter informações do vídeo usando yt-dlp
 export const getVideoInfo = async (url: string): Promise<VideoInfo | null> => {
   try {
-    // Usar comando yt-dlp com shell do Bun corretamente
-    // const proc = Bun.spawn(['yt-dlp', '--dump-json', '--no-warnings', url], {
-    //   stdout: 'pipe',
-    //   stderr: 'pipe',
-    // });
+    const output = await ytdlp.downloadAsync(
+      url,
+      {
+        onProgress: (progress) => {
+          console.log(progress);
+        },
+        
+      }
+    );
 
-    const proc = Bun.spawn([YT_DLP, '--dump-json', '--no-warnings', url], {
-      // cwd: "./path/to/subdir", // specify a working directory
-      stdout: 'pipe',
-      stderr: 'pipe',
-    });
-
-    const output = await new Response(proc.stdout).text();
-    const errorOutput = await new Response(proc.stderr).text();
-
-    if (proc.exitCode !== 0) {
-      console.error('yt-dlp error:', errorOutput);
-      return null;
-    }
-
-    // Verificar se o output não está vazio
-    if (!output || output.trim() === '') {
-      console.error('Empty output from yt-dlp');
-      return null;
-    }
+    //const output = await new Response(proc.stdout).text();
+    //const errorOutput = await new Response(proc.stderr).text();
 
     try {
       const info = JSON.parse(output);
@@ -237,21 +227,6 @@ export const isValidYouTubeUrl = (url: string): boolean => {
   ];
   
   return patterns.some(pattern => pattern.test(url));
-};
-
-// Verificar se yt-dlp está instalado
-export const checkYtDlpInstalled = async (): Promise<boolean> => {
-  try {
-    const proc = Bun.spawn([YT_DLP, '--version'], {
-      stdout: 'pipe',
-      stderr: 'pipe',
-    });
-    
-    await proc.exited;
-    return proc.exitCode === 0;
-  } catch {
-    return false;
-  }
 };
 
 // Listar arquivos baixados

@@ -7,7 +7,7 @@ live = input.harbor("aovivo", port=8010, user="dj", password="hackme")
 def next()
   def request_function() =
     # Chama a API do Next.js (ajuste a porta se necessário)
-    lines = process.read.lines("curl -s http://localhost:4060/api/song")
+    lines = process.read.lines("curl -s http://localhost:4060/api/music")
     uri = list.hd(default="", lines)
     
     # Log para depuração (verifique no terminal)

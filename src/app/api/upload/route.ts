@@ -5,21 +5,20 @@ import { eq } from 'drizzle-orm';
 import {
   downloadAudioWithMetadata,
   getVideoInfo,
-  isValidYouTubeUrl,
-  checkYtDlpInstalled,
+  isValidYouTubeUrl
 } from '@/lib/youtube';
 import path from 'path';
 
 // Verificar se yt-dlp está instalado ao iniciar
 const verifyDependencies = async (): Promise<{ success: boolean; error?: string }> => {
-  const ytDlpInstalled = await checkYtDlpInstalled();
+  // const ytDlpInstalled = await checkYtDlpInstalled();
   
-  if (!ytDlpInstalled) {
-    return {
-      success: false,
-      error: 'yt-dlp is not installed. Please install it first: https://github.com/yt-dlp/yt-dlp#installation'
-    };
-  }
+  // if (!ytDlpInstalled) {
+  //   return {
+  //     success: false,
+  //     error: 'yt-dlp is not installed. Please install it first: https://github.com/yt-dlp/yt-dlp#installation'
+  //   };
+  // }
   
   return { success: true };
 };
@@ -70,15 +69,6 @@ const processDownloadAsync = async (downloadId: number, url: string): Promise<vo
 
 export async function POST(request: NextRequest) {
   try {
-    // Verificar dependências
-    const deps = await verifyDependencies();
-    if (!deps.success) {
-      return NextResponse.json(
-        { error: deps.error },
-        { status: 500 }
-      );
-    }
-
     const body = await request.json();
     const { url } = body;
 
